@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureLink Dispatch - Control Center</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ── Login ─────────────────────────────────────────────── */
+        .login-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .login-box { width: 100%; max-width: 400px; }
+
+        .login-header { text-align: center; margin-bottom: 48px; }
+
+        .logo-box {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 40px;
+            box-shadow: 0 10px 20px rgba(59,130,246,0.3);
+        }
+
+        .login-title    { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+        .login-subtitle { color: #94a3b8; font-size: 12px; }
+
+        .login-form { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
+
+        .input-wrapper {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
+
+        .input-wrapper input { background: transparent; border: none; outline: none; color: #fff; font-size: 14px; }
+        .input-wrapper input::placeholder { color: #64748b; }
+
+        .btn-login {
+            padding: 16px;
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white; font-weight: bold; border: none; border-radius: 12px;
+            cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59,130,246,0.3); }
+
+        .info-box {
+            background-color: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+            padding: 24px; border-radius: 12px; margin-top: 24px;
+        }
+        .info-title { font-weight: bold; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; }
+        .info-list  { font-size: 13px; color: #cbd5e1; display: flex; flex-direction: column; gap: 6px; }
+
+        /* ── Dashboard shell ─────────────────────────────────────── */
+        .dashboard      { display: none; height: 100vh; flex-direction: column; }
+        .dashboard.show { display: flex; flex-direction: column; }
+
+        .dashboard-header {
+            background: linear-gradient(to right, #1e293b, #0f172a);
+            border-bottom: 1px solid #334155;
+            padding: 16px 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 12px; }
+
+        .header-logo {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+        }
+
+        .header-text h1 { font-size: 20px; font-weight: 900; }
+        .header-text p  { font-size: 10px; color: #64748b; }
+
+        .header-btn {
+            padding: 8px 16px;
+            background-color: #1e293b; color: #cbd5e1;
+            border: 1px solid #334155; border-radius: 8px;
+            cursor: pointer; font-weight: bold; font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        .logout-btn:hover { background-color: #dc2626; border-color: #dc2626; }
+
+        /* ── Stats bar ───────────────────────────────────────────── */
+        .stats-bar {
+            background-color: rgba(30,41,59,0.5);
+            border-bottom: 1px solid #334155;
+            padding: 16px 24px;
+            display: flex; gap: 48px; align-items: center;
+            flex-shrink: 0;
+        }
+
+        .stat-item    { display: flex; align-items: center; gap: 12px; }
+        .stat-content { display: flex; flex-direction: column; }
+        .stat-label   { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; }
+        .stat-value   { font-size: 24px; font-weight: 900; color: white; }
+
+        .stat-dot { width: 16px; height: 16px; border-radius: 50%; animation: blink 2s ease-in-out infinite; }
+        .stat-dot.active   { background-color: #ef4444; }
+        .stat-dot.resolved { background-color: #22c55e; }
+
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+        /* ── Main grid ───────────────────────────────────────────── */
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ── Left panel ──────────────────────────────────────────── */
+        .alerts-panel {
+            border-right: 1px solid #334155;
+            padding: 24px; overflow-y: auto;
+            display: flex; flex-direction: column;
+            background-color: rgba(15,23,42,0.5);
+        }
+
+        .filter-buttons { display: flex; gap: 8px; margin-bottom: 24px; }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background-color: #1e293b; color: #cbd5e1;
+            border: 1px solid #334155; border-radius: 8px;
+            cursor: pointer; font-weight: bold; font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        .filter-btn.active { background-color: #3b82f6; border-color: #3b82f6; color: white; }
+
+        .alerts-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+
+        .alert-card {
+            background-color: #1e293b; border: 2px solid #334155;
+            border-radius: 16px; padding: 16px; cursor: pointer; transition: all 0.3s ease;
+        }
+        .alert-card:hover  { background-color: #334155; border-color: #475569; }
+        .alert-card.active { background-color: #334155; border-color: #3b82f6; box-shadow: 0 10px 20px rgba(59,130,246,0.2); }
+
+        .alert-vehicle { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .alert-plate   { font-weight: 900; font-size: 16px; letter-spacing: 1px; }
+        .alert-vehicle-desc {
+            font-size: 11px; color: #cbd5e1;
+            background-color: rgba(30,41,59,0.8);
+            padding: 2px 8px; border-radius: 4px;
+        }
+        .alert-driver   { font-size: 12px; color: #cbd5e1; margin-bottom: 8px; }
+        .alert-location { font-size: 11px; color: #64748b; }
+
+        .no-alerts {
+            display: flex; align-items: center; justify-content: center;
+            height: 100%; flex-direction: column; text-align: center; color: #64748b; gap: 8px;
+        }
+
+        /* ── Centre panel ────────────────────────────────────────── */
+        .details-panel {
+            border-right: 1px solid #334155;
+            padding: 24px; overflow-y: auto;
+            background-color: rgba(15,23,42,0.3);
+            display: flex; flex-direction: column;
+        }
+
+        .empty-details {
+            display: flex; align-items: center; justify-content: center;
+            height: 100%; text-align: center; color: #64748b;
+        }
+
+        #detailsContent { flex-direction: column; flex: 1; overflow-y: auto; }
+
+        .detail-tabs {
+            display: flex; gap: 8px; margin-bottom: 16px;
+            border-bottom: 1px solid #334155; flex-shrink: 0;
+        }
+
+        .detail-tab {
+            padding: 8px 12px; background: none; border: none; color: #64748b;
+            cursor: pointer; font-size: 12px; font-weight: bold;
+            border-bottom: 2px solid transparent; transition: all 0.3s ease;
+        }
+        .detail-tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+
+        .tab-content        { display: none; flex: 1; overflow-y: auto; }
+        .tab-content.active { display: block; }
+
+        /* ── Dispatch notes ──────────────────────────────────────── */
+        .dispatch-notes {
+            background-color: #1e293b; border: 1px solid #334155;
+            border-radius: 8px; padding: 12px; margin-bottom: 16px;
+        }
+        .notes-title {
+            font-size: 11px; font-weight: bold; text-transform: uppercase;
+            margin-bottom: 8px; color: #3b82f6;
+        }
+        .notes-textarea {
+            width: 100%; background-color: #0f172a; border: 1px solid #334155;
+            border-radius: 6px; padding: 8px; color: #fff;
+            font-family: 'Monaco', monospace; font-size: 11px;
+            min-height: 80px; resize: vertical; transition: border-color 0.3s ease;
+        }
+        .notes-textarea:focus { outline: none; border-color: #3b82f6; }
+        .notes-textarea::placeholder { color: #64748b; }
+
+        .notes-log { margin-top: 12px; max-height: 160px; overflow-y: auto; }
+
+        .note-entry {
+            background-color: #0f172a; padding: 8px 8px 8px 10px;
+            border-radius: 4px; margin-bottom: 8px; font-size: 10px;
+            border-left: 2px solid #3b82f6;
+        }
+        .note-time { color: #64748b; font-size: 9px; }
+        .note-text { color: #cbd5e1; margin-top: 2px; }
+
+        /* ── Action buttons ──────────────────────────────────────── */
+        .action-buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; flex-shrink: 0; }
+
+        .action-btn {
+            padding: 12px; border: none; border-radius: 8px; font-weight: bold;
+            cursor: pointer; font-size: 12px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .btn-maps    { background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); color: white; }
+        .btn-maps:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59,130,246,0.3); }
+        .btn-resolve { background-color: #16a34a; color: white; }
+        .btn-resolve:hover { background-color: #15803d; }
+        .btn-copy    { background-color: #334155; color: #cbd5e1; }
+        .btn-copy:hover  { background-color: #475569; }
+        .btn-save-note   { background-color: #3b82f6; color: white; margin-top: 8px; }
+        .btn-save-note:hover { background-color: #2563eb; }
+
+        /* ── Right panel – Analytics ─────────────────────────────── */
+        .analytics-panel {
+            padding: 24px; overflow-y: auto;
+            background-color: rgba(15,23,42,0.5);
+            display: flex; flex-direction: column; gap: 16px;
+        }
+
+        .analytics-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; }
+
+        .card-title   { font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 12px; }
+        .metric-value { font-size: 32px; font-weight: 900; color: #3b82f6; margin-bottom: 4px; }
+        .metric-unit  { font-size: 11px; color: #94a3b8; }
+
+        /* ── Scrollbars ──────────────────────────────────────────── */
+        .alerts-list::-webkit-scrollbar,
+        .details-panel::-webkit-scrollbar,
+        .analytics-panel::-webkit-scrollbar,
+        .notes-log::-webkit-scrollbar { width: 6px; }
+
+        .alerts-list::-webkit-scrollbar-track,
+        .details-panel::-webkit-scrollbar-track,
+        .analytics-panel::-webkit-scrollbar-track,
+        .notes-log::-webkit-scrollbar-track { background: transparent; }
+
+        .alerts-list::-webkit-scrollbar-thumb,
+        .details-panel::-webkit-scrollbar-thumb,
+        .analytics-panel::-webkit-scrollbar-thumb,
+        .notes-log::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+        /* ── Notification toast ──────────────────────────────────── */
+        .notification {
+            position: fixed; top: 24px; right: 24px;
+            padding: 12px 24px; border-radius: 8px; font-weight: bold;
+            z-index: 100; display: none; animation: slideIn 0.3s ease-out;
+        }
+        .notification.show    { display: block; }
+        .notification.success { background-color: #16a34a; }
+        .notification.error   { background-color: #dc2626; }
+        .notification.alert   { background-color: #dc2626; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+
+        audio { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- ── Login ────────────────────────────────────────────────────────── -->
+<div id="loginContainer" class="login-container">
+    <div class="login-box">
+        <div class="login-header">
+            <div class="logo-box">📡</div>
+            <h1 class="login-title">SecureLink</h1>
+            <p class="login-subtitle">Dispatch Control Center v3.1</p>
+        </div>
+
+        <form class="login-form" onsubmit="dispatch.handleLogin(event)">
+            <div class="input-wrapper">
+                <label class="input-label">Dispatcher Name</label>
+                <input type="text" placeholder="Officer Rodriguez" id="dispatcherName" required>
+            </div>
+            <button type="submit" class="btn-login">📡 ACCESS DISPATCH CENTER</button>
+        </form>
+
+        <div class="info-box">
+            <div class="info-title">🚀 Features</div>
+            <div class="info-list">
+                <div>✓ Live emergency alert monitoring</div>
+                <div>✓ Dispatch notes &amp; communication logs</div>
+                <div>✓ Incident resolution tracking</div>
+                <div>✓ Google Maps integration</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Dashboard ────────────────────────────────────────────────────── -->
+<div id="dashboard" class="dashboard">
+
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="header-left">
+            <div class="header-logo">📡</div>
+            <div class="header-text">
+                <h1>SecureLink Dispatch</h1>
+                <p>Control Center • <span id="dispatcherTitle">Officer</span></p>
+            </div>
+        </div>
+        <button class="header-btn logout-btn" onclick="dispatch.handleLogout()">🚪 Logout</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-dot active"></div>
+            <div class="stat-content">
+                <div class="stat-label">Active Alerts</div>
+                <div class="stat-value" id="activeCount">0</div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-dot resolved"></div>
+            <div class="stat-content">
+                <div class="stat-label">Resolved Today</div>
+                <div class="stat-value" id="resolvedCount">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-content">
+
+        <!-- Left: Alerts List -->
+        <div class="alerts-panel">
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="dispatch.setFilter('active',   event)">🔴 Active</button>
+                <button class="filter-btn"        onclick="dispatch.setFilter('resolved', event)">✅ Resolved</button>
+                <button class="filter-btn"        onclick="dispatch.setFilter('all',      event)">📋 All</button>
+            </div>
+            <div class="alerts-list" id="alertsList">
+                <div class="no-alerts">
+                    <div>📡</div>
+                    <div>No alerts</div>
+                    <div style="font-size:11px;">Waiting for emergency signals…</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Centre: Details -->
+        <div class="details-panel">
+            <div class="empty-details" id="emptyDetails">
+                Select an alert to view details
+            </div>
+
+            <div id="detailsContent" style="display:none;">
+                <div class="detail-tabs">
+                    <button class="detail-tab active" onclick="dispatch.switchTab('overview', event)">📋 Overview</button>
+                    <button class="detail-tab"        onclick="dispatch.switchTab('notes',    event)">📝 Dispatch Log</button>
+                </div>
+
+                <div id="tab-overview" class="tab-content active"></div>
+
+                <div id="tab-notes" class="tab-content">
+                    <div class="dispatch-notes">
+                        <div class="notes-title">📝 Internal Dispatch Log</div>
+                        <textarea class="notes-textarea" id="dispatchNotes"
+                            placeholder="Add updates: 'SAPS notified', 'Contacting family', 'Unit arrived at scene'…"></textarea>
+                        <button class="action-btn btn-save-note" onclick="dispatch.saveDispatchNote()">💾 Save Note</button>
+                        <div class="notes-log" id="notesLog"></div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn btn-maps"    onclick="dispatch.openMaps()">🗺️ View on Maps</button>
+                    <button class="action-btn btn-resolve" id="resolveBtn" onclick="dispatch.resolveAlert()" style="display:none;">✅ Resolve Alert</button>
+                    <button class="action-btn btn-copy"    onclick="dispatch.copyDetails()">📋 Copy Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Analytics (real data only) -->
+        <div class="analytics-panel">
+            <h3 style="font-size:14px; font-weight:900; margin-bottom:16px;">📊 Session Analytics</h3>
+
+            <div class="analytics-card">
+                <div class="card-title">Total Incidents</div>
+                <div class="metric-value" id="totalIncidents">0</div>
+                <div class="metric-unit">active + resolved this session</div>
+            </div>
+
+            <div class="analytics-card">
+                <div class="card-title">Resolution Rate</div>
+                <div class="metric-value" id="resolutionRate">—</div>
+                <div class="metric-unit">of all alerts resolved</div>
+            </div>
+
+            <div class="analytics-card">
+                <div class="card-title">Avg Response Time</div>
+                <div class="metric-value" id="avgResponseTime">—</div>
+                <div class="metric-unit">alert-to-resolve (hh:mm:ss)</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="notification" id="notification"></div>
+<audio id="alertSound" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBT+P1fLIeDEGIXfH8N2RQgsc"></audio>
+
+<script>
+const dispatch = {
+    isLoggedIn:     false,
+    dispatcherName: '',
+    liveAlerts:     [],
+    resolvedAlerts: [],
+    selectedAlert:  null,
+    filterStatus:   'active',
+
+    init() {
+        this.loadAlertsFromStorage();
+        setInterval(() => this.checkForNewAlerts(), 2000);
+    },
+
+    // ── Auth ──────────────────────────────────────────────────
+    handleLogin(e) {
+        e.preventDefault();
+        const name = document.getElementById('dispatcherName').value.trim();
+        if (!name) { this.showNotification('❌ Please enter your name', 'error'); return; }
+        this.dispatcherName = name;
+        this.isLoggedIn     = true;
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('dashboard').classList.add('show');
+        document.getElementById('dispatcherTitle').textContent  = name;
+        this.showNotification(`👋 Welcome, ${name}!`, 'success');
+        this.loadAlertsFromStorage();
+    },
+
+    handleLogout() {
+        this.isLoggedIn     = false;
+        this.dispatcherName = '';
+        this.liveAlerts     = [];
+        this.resolvedAlerts = [];
+        this.selectedAlert  = null;
+        document.getElementById('loginContainer').style.display = 'flex';
+        document.getElementById('dashboard').classList.remove('show');
+        document.getElementById('dispatcherName').value = '';
+        document.getElementById('dispatcherName').focus();
+    },
+
+    // ── Notifications ─────────────────────────────────────────
+    showNotification(msg, type = 'info') {
+        const el = document.getElementById('notification');
+        el.textContent = msg;
+        el.className   = `notification show ${type}`;
+        setTimeout(() => el.classList.remove('show'), 4000);
+    },
+
+    // ── Storage ───────────────────────────────────────────────
+    loadAlertsFromStorage() {
+        const raw = localStorage.getItem('firebase-alerts');
+        if (!raw) return;
+        try {
+            const all           = JSON.parse(raw);
+            this.liveAlerts     = all.filter(a => a.status === 'active');
+            this.resolvedAlerts = all.filter(a => a.status === 'resolved');
+            this.renderAlerts();
+            this.updateStats();
+        } catch (e) { console.error('Parse error:', e); }
+    },
+
+    checkForNewAlerts() {
+        if (!this.isLoggedIn) return;
+        const raw = localStorage.getItem('firebase-alerts');
+        if (!raw) return;
+        try {
+            const all       = JSON.parse(raw);
+            const prevCount = this.liveAlerts.length;
+            const newCount  = all.filter(a => a.status === 'active').length;
+            if (newCount > prevCount) {
+                document.getElementById('alertSound').play().catch(() => {});
+                this.showNotification('🚨 New emergency alert received!', 'alert');
+            }
+            this.liveAlerts     = all.filter(a => a.status === 'active');
+            this.resolvedAlerts = all.filter(a => a.status === 'resolved');
+            this.renderAlerts();
+            this.updateStats();
+        } catch (e) { console.error('Parse error:', e); }
+    },
+
+    // ── Filter ────────────────────────────────────────────────
+    setFilter(status, e) {
+        this.filterStatus = status;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        if (e?.target) e.target.classList.add('active');
+        this.renderAlerts();
+    },
+
+    // ── Render alerts ─────────────────────────────────────────
+    renderAlerts() {
+        const list = document.getElementById('alertsList');
+        const alerts =
+            this.filterStatus === 'active'   ? this.liveAlerts :
+            this.filterStatus === 'resolved' ? this.resolvedAlerts :
+            [...this.liveAlerts, ...this.resolvedAlerts];
+
+        if (!alerts.length) {
+            list.innerHTML = `
+                <div class="no-alerts">
+                    <div>📡</div><div>No alerts</div>
+                    <div style="font-size:11px;">Waiting for emergency signals…</div>
+                </div>`;
+            return;
+        }
+
+        list.innerHTML = alerts.map((a, idx) => `
+            <div class="alert-card ${this.selectedAlert?.alertId === a.alertId ? 'active' : ''}"
+                 onclick="dispatch.selectAlert(${idx},'${a.status}')">
+                <div class="alert-vehicle">
+                    <span style="font-size:16px;">🚗</span>
+                    <span class="alert-plate">${a.vehicleReg ?? '--'}</span>
+                    <span class="alert-vehicle-desc">${a.vehicleColor ?? ''} ${a.vehicleMake ?? ''}</span>
+                </div>
+                <div class="alert-driver">👤 ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
+                <div class="alert-location">📍 ${a.location?.lat?.toFixed(4) ?? '--'}, ${a.location?.lng?.toFixed(4) ?? '--'}</div>
+            </div>`
+        ).join('');
+    },
+
+    // ── Select alert ──────────────────────────────────────────
+    selectAlert(idx, status) {
+        const pool         = status === 'active' ? this.liveAlerts : this.resolvedAlerts;
+        this.selectedAlert = pool[idx];
+        this.renderAlerts();
+        this.renderDetails();
+        document.getElementById('emptyDetails').style.display   = 'none';
+        document.getElementById('detailsContent').style.display = 'flex';
+    },
+
+    // ── Tab switching ─────────────────────────────────────────
+    switchTab(name, e) {
+        document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        if (e?.target) e.target.classList.add('active');
+        document.getElementById(`tab-${name}`).classList.add('active');
+    },
+
+    // ── Render details ────────────────────────────────────────
+    renderDetails() {
+        if (!this.selectedAlert) return;
+        const a = this.selectedAlert;
+
+        document.getElementById('tab-overview').innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                <div class="analytics-card">
+                    <div class="card-title">Vehicle Information</div>
+                    <div style="font-size:13px;color:#cbd5e1;line-height:1.8;">
+                        <div><strong>Plate:</strong> ${a.vehicleReg ?? '--'}</div>
+                        <div><strong>Make:</strong>  ${a.vehicleMake ?? '--'}</div>
+                        <div><strong>Color:</strong> ${a.vehicleColor ?? '--'}</div>
+                    </div>
+                </div>
+                <div class="analytics-card">
+                    <div class="card-title">Driver Information</div>
+                    <div style="font-size:13px;color:#cbd5e1;line-height:1.8;">
+                        <div><strong>Name:</strong>    ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
+                        <div><strong>User ID:</strong> ${a.userId ?? '--'}</div>
+                    </div>
+                </div>
+                <div class="analytics-card">
+                    <div class="card-title">Location &amp; Status</div>
+                    <div style="font-size:13px;color:#cbd5e1;line-height:1.8;">
+                        <div><strong>Latitude:</strong>  ${a.location?.lat?.toFixed(6) ?? '--'}</div>
+                        <div><strong>Longitude:</strong> ${a.location?.lng?.toFixed(6) ?? '--'}</div>
+                        <div><strong>Accuracy:</strong>  ±${a.location?.accuracy ?? '--'}m</div>
+                        <div><strong>Battery:</strong>   ${a.battery ?? '--'}%</div>
+                        <div><strong>Alert ID:</strong>  ${a.alertId ?? '--'}</div>
+                        <div><strong>Triggered:</strong> ${a.timestamp  ? new Date(a.timestamp).toLocaleString()  : '--'}</div>
+                        ${a.resolvedAt ? `<div><strong>Resolved:</strong>    ${new Date(a.resolvedAt).toLocaleString()}</div>` : ''}
+                        ${a.resolvedBy ? `<div><strong>Resolved by:</strong> ${a.resolvedBy}</div>` : ''}
+                    </div>
+                </div>
+            </div>`;
+
+        // Always reset to overview when switching alerts
+        document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelector('.detail-tab').classList.add('active');
+        document.getElementById('tab-overview').classList.add('active');
+
+        this.renderNotesLog();
+        document.getElementById('resolveBtn').style.display =
+            a.status === 'active' ? 'flex' : 'none';
+    },
+
+    // ── Dispatch notes ────────────────────────────────────────
+    saveDispatchNote() {
+        const note = document.getElementById('dispatchNotes').value.trim();
+        if (!note) { this.showNotification('❌ Note cannot be empty', 'error'); return; }
+        if (!this.selectedAlert.dispatchNotes) this.selectedAlert.dispatchNotes = [];
+        this.selectedAlert.dispatchNotes.push({
+            timestamp:  new Date().toISOString(),
+            note,
+            dispatcher: this.dispatcherName
+        });
+        document.getElementById('dispatchNotes').value = '';
+        this.renderNotesLog();
+        this.showNotification('✅ Dispatch note saved', 'success');
+    },
+
+    renderNotesLog() {
+        const el    = document.getElementById('notesLog');
+        if (!el) return;
+        const notes = this.selectedAlert?.dispatchNotes ?? [];
+        el.innerHTML = notes.map(n => `
+            <div class="note-entry">
+                <div class="note-time">${new Date(n.timestamp).toLocaleTimeString()} — ${n.dispatcher}</div>
+                <div class="note-text">${n.note}</div>
+            </div>`
+        ).join('');
+    },
+
+    // ── Actions ───────────────────────────────────────────────
+    openMaps() {
+        if (!this.selectedAlert) return;
+        const { lat, lng } = this.selectedAlert.location ?? {};
+        if (lat == null || lng == null) { this.showNotification('❌ No location data', 'error'); return; }
+        window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+    },
+
+    copyDetails() {
+        if (!this.selectedAlert) return;
+        const a    = this.selectedAlert;
+        const text = `${a.vehicleReg} | ${a.vehicleColor} ${a.vehicleMake} | ${a.location?.lat?.toFixed(4) ?? '--'}, ${a.location?.lng?.toFixed(4) ?? '--'}`;
+        navigator.clipboard.writeText(text)
+            .then(()  => this.showNotification('📋 Copied to clipboard', 'success'))
+            .catch(()  => this.showNotification('❌ Failed to copy', 'error'));
+    },
+
+    resolveAlert() {
+        if (!this.selectedAlert) return;
+        const id  = this.selectedAlert.alertId;
+        const raw = localStorage.getItem('firebase-alerts');
+        if (!raw) return;
+        try {
+            const all    = JSON.parse(raw);
+            const target = all.find(a => a.alertId === id);
+            if (target) {
+                target.status     = 'resolved';
+                target.resolvedBy = this.dispatcherName;
+                target.resolvedAt = new Date().toISOString();
+                localStorage.setItem('firebase-alerts', JSON.stringify(all));
+                this.loadAlertsFromStorage();
+                this.selectedAlert = null;
+                document.getElementById('emptyDetails').style.display   = 'flex';
+                document.getElementById('detailsContent').style.display = 'none';
+                this.showNotification(`✅ Alert resolved by ${this.dispatcherName}`, 'success');
+            }
+        } catch (e) { console.error('Resolve error:', e); }
+    },
+
+    // ── Stats – computed from real data only ──────────────────
+    updateStats() {
+        const active   = this.liveAlerts.length;
+        const resolved = this.resolvedAlerts.length;
+        const total    = active + resolved;
+
+        document.getElementById('activeCount').textContent    = active;
+        document.getElementById('resolvedCount').textContent  = resolved;
+        document.getElementById('totalIncidents').textContent = total;
+
+        document.getElementById('resolutionRate').textContent =
+            total > 0 ? Math.round((resolved / total) * 100) + '%' : '—';
+
+        // Average response time from real resolvedAt – timestamp pairs
+        const times = this.resolvedAlerts
+            .filter(a => a.resolvedAt && a.timestamp)
+            .map(a => new Date(a.resolvedAt) - new Date(a.timestamp));
+
+        if (times.length) {
+            const avg = times.reduce((s, t) => s + t, 0) / times.length;
+            const h   = Math.floor(avg / 3600000);
+            const m   = Math.floor((avg % 3600000) / 60000);
+            const s   = Math.floor((avg % 60000) / 1000);
+            document.getElementById('avgResponseTime').textContent =
+                `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        } else {
+            document.getElementById('avgResponseTime').textContent = '—';
+        }
+    }
+};
+
+dispatch.init();
+</script>
+</body>
+</html>
