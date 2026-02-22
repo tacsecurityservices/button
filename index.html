@@ -193,6 +193,20 @@
         .toast.alert   { background-color: #dc2626; }
         .toast.purple  { background-color: #7c3aed; }
         @keyframes toastIn { from{transform:translateX(110%);opacity:0;}to{transform:translateX(0);opacity:1;} }
+        /* Phone display panel */
+        .phone-display-row { display:flex; align-items:center; justify-content:space-between; padding:7px 10px; background-color:#0f172a; border-radius:8px; border:1px solid #1e293b; }
+        .phone-display-icon { font-size:15px; }
+        .phone-display-info { flex:1; margin-left:8px; }
+        .phone-display-name { font-size:10px; font-weight:bold; color:#e2e8f0; }
+        .phone-display-num  { font-size:11px; color:#a855f7; font-family:monospace; margin-top:1px; }
+        .phone-display-num.empty { color:#334155; font-style:italic; }
+        .phone-display-call { background:none; border:1px solid #334155; border-radius:6px; color:#94a3b8; cursor:pointer; font-size:10px; padding:3px 8px; transition:all 0.2s; white-space:nowrap; }
+        .phone-display-call:hover:not(:disabled) { border-color:#a855f7; color:#c084fc; }
+        .phone-display-call:disabled { opacity:0.3; cursor:not-allowed; }
+
+        /* User phone badge on alert card */
+        .card-phone { font-size:10px; color:#a855f7; font-family:monospace; margin-top:2px; }
+
         audio { display: none; }
     </style>
 </head>
@@ -360,17 +374,22 @@
             <div class="metric-card"><div class="metric-title">AI Calls Dispatched</div><div class="metric-val purple" id="totalCalls">0</div><div class="metric-unit">via Retell agent</div></div>
             <div class="metric-card"><div class="metric-title">Avg Response Time</div><div class="metric-val" id="avgTime" style="font-size:16px;">—</div><div class="metric-unit">alert-to-resolve</div></div>
 
+            <!-- Live service numbers card — updated whenever settings are saved -->
             <div class="metric-card" style="border-color:rgba(168,85,247,0.3);">
-                <div class="metric-title" style="color:#a855f7;">🔗 Make.com Setup</div>
+                <div class="metric-title" style="color:#a855f7;">📞 Service Numbers</div>
+                <div id="phoneDisplayPanel" style="display:flex;flex-direction:column;gap:7px;margin-top:2px;">
+                    <!-- Populated by updatePhoneDisplay() -->
+                </div>
+                <button onclick="dc.showSettings()" style="margin-top:10px;width:100%;padding:7px;background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.3);color:#c084fc;border-radius:7px;cursor:pointer;font-size:10px;font-weight:bold;">
+                    ⚙️ Edit Numbers
+                </button>
+            </div>
+
+            <div class="metric-card" style="border-color:rgba(249,115,22,0.3);">
+                <div class="metric-title" style="color:#f97316;">🔗 User App</div>
                 <div style="font-size:10px;color:#94a3b8;line-height:1.8;">
-                    <b style="color:#c084fc;">Scenario steps:</b><br>
-                    1️⃣ Webhook (receives alert)<br>
-                    2️⃣ HTTP POST → Retell API<br>
-                    &nbsp;&nbsp;<code style="font-size:9px;color:#818cf8;">POST /v2/create-phone-call</code><br>
-                    3️⃣ Parse call_id response<br><br>
-                    <b style="color:#c084fc;">Retell dynamic vars:</b><br>
-                    <code style="font-size:9px;color:#818cf8;">driver_name, vehicle_reg,<br>vehicle_desc, gps_coords,<br>maps_link, battery</code><br><br>
-                    <a href="https://tacsecurityservices.github.io/buttot/" target="_blank" style="color:#f97316;font-weight:bold;">User app ↗</a>
+                    <a href="https://tacsecurityservices.github.io/buttot/" target="_blank" style="color:#f97316;font-weight:bold;">tacsecurityservices.github.io/buttot ↗</a><br>
+                    Share with users — works on any device via Firebase.
                 </div>
             </div>
         </div>
@@ -466,6 +485,7 @@ const dc = window.dc = {
         document.getElementById('dashboard').classList.add('show');
         document.getElementById('dispTitle').textContent = name;
         this.toast(`👋 Welcome, ${name}!`, 'success');
+        this.updatePhoneDisplay();
         this.startListening();
     },
 
@@ -541,6 +561,7 @@ const dc = window.dc = {
             this.allAlerts = raw;
             this.render();
             this.updateStats();
+            this.updatePhoneDisplay();
             document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
         });
     },
@@ -578,6 +599,7 @@ const dc = window.dc = {
                     <span class="card-desc">${a.vehicleColor ?? ''} ${a.vehicleMake ?? ''}</span>
                 </div>
                 <div class="card-driver">👤 ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
+                ${a.userPhone ? `<div class="card-phone">📱 ${a.userPhone}</div>` : ''}
                 <div class="card-loc">📍 ${a.location?.lat?.toFixed(4) ?? '--'}, ${a.location?.lng?.toFixed(4) ?? '--'}</div>
                 <div class="card-meta">🕐 ${ago}${a.battery ? `  🔋 ${a.battery}%` : ''} ${pill}</div>
             </div>`;
@@ -597,6 +619,7 @@ const dc = window.dc = {
         this.selectedId = id;
         this.render();
         this.renderDetails();
+        this.updatePhoneDisplay();
         document.getElementById('emptyDet').style.display   = 'none';
         document.getElementById('detContent').style.display = 'flex';
     },
@@ -620,6 +643,7 @@ const dc = window.dc = {
                 ${a.status === 'active' ? `<div class="live-chip"><span></span> LIVE — GPS updates in real time</div>` : ''}
                 <div class="ov-card"><div class="ov-title">👤 Driver</div><div class="ov-body">
                     <div><strong>Name:</strong> ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
+                    <div><strong>Phone:</strong> ${a.userPhone ?? '--'}</div>
                     <div><strong>User ID:</strong> ${a.userId ?? '--'}</div>
                 </div></div>
                 <div class="ov-card"><div class="ov-title">🚗 Vehicle</div><div class="ov-body">
@@ -848,7 +872,35 @@ const dc = window.dc = {
         this.saveConfig();
         this.hideSettings();
         this.toast('✅ Settings saved', 'success');
+        this.updatePhoneDisplay();
         if (this.selectedId) this.renderRetell();
+    },
+
+    // ── Service numbers panel (right sidebar) ─────────────
+    updatePhoneDisplay() {
+        const el = document.getElementById('phoneDisplayPanel');
+        if (!el) return;
+        const services = [
+            { icon:'🚔', name:'SAPS',           num: this.cfg.sapsNum   },
+            { icon:'🛡️', name:'Armed Response',  num: this.cfg.armedNum  },
+            { icon:'🚑', name:'Medical',         num: this.cfg.medNum    },
+            { icon:'👨‍👩‍👧', name:'Family',          num: this.cfg.familyNum },
+        ];
+        el.innerHTML = services.map(s => {
+            const hasNum    = !!s.num;
+            const hasAlert  = !!this.selectedId && this.allAlerts[this.selectedId]?.status === 'active';
+            const canCall   = hasNum && hasAlert && !!this.cfg.webhookUrl;
+            return `
+            <div class="phone-display-row">
+                <div class="phone-display-icon">${s.icon}</div>
+                <div class="phone-display-info">
+                    <div class="phone-display-name">${s.name}</div>
+                    <div class="phone-display-num ${hasNum ? '' : 'empty'}">${hasNum ? s.num : 'Not set'}</div>
+                </div>
+                ${hasNum ? `<button class="phone-display-call" ${canCall ? '' : 'disabled'}
+                    onclick="dc.triggerCall('${s.name}','${s.num}')">📞 Call</button>` : ''}
+            </div>`;
+        }).join('');
     },
 
     // ── Notes ─────────────────────────────────────────────
