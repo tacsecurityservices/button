@@ -6,271 +6,255 @@
     <title>SecureLink Dispatch - Control Center</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; height: 100vh; overflow: hidden; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #fff;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* ── Login ─────────────────────────────────────────────── */
-        .login-container { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
-        .login-box { width: 100%; max-width: 420px; }
-        .login-header { text-align: center; margin-bottom: 40px; }
-        .logo-box {
-            width: 80px; height: 80px;
-            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-            border-radius: 16px; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 24px; font-size: 40px;
-            box-shadow: 0 10px 20px rgba(59,130,246,0.3);
-        }
-        .login-title    { font-size: 28px; font-weight: 900; margin-bottom: 6px; }
-        .login-subtitle { color: #94a3b8; font-size: 12px; }
-
-        .login-form { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
-        .input-wrapper {
-            background-color: #1e293b; border: 1px solid #334155;
-            border-radius: 12px; padding: 12px; display: flex; flex-direction: column;
-        }
-        .input-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
-        .input-wrapper input { background: transparent; border: none; outline: none; color: #fff; font-size: 14px; }
-        .input-wrapper input::placeholder { color: #64748b; }
-
-        .btn-login {
-            padding: 16px;
-            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-            color: white; font-weight: bold; border: none; border-radius: 12px;
-            cursor: pointer; transition: all 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px;
-        }
+        /* ── Login ─────────────────────────────────────────── */
+        .login-container { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; overflow-y: auto; }
+        .login-box { width: 100%; max-width: 440px; padding: 20px 0; }
+        .login-header { text-align: center; margin-bottom: 28px; }
+        .logo-box { width: 72px; height: 72px; background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 36px; box-shadow: 0 10px 20px rgba(59,130,246,0.3); }
+        .login-title    { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
+        .login-subtitle { color: #94a3b8; font-size: 11px; }
+        .login-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+        .iw { background-color: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; transition: border-color 0.2s; }
+        .iw:focus-within { border-color: #3b82f6; }
+        .il { font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 3px; }
+        .iw input { background: transparent; border: none; outline: none; color: #fff; font-size: 13px; }
+        .iw input::placeholder { color: #64748b; }
+        .section-lbl { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #a855f7; padding-top: 10px; margin-top: 4px; border-top: 1px solid #334155; display: flex; align-items: center; gap: 8px; }
+        .section-lbl::after { content:''; flex:1; height:1px; background:#1e293b; }
+        .btn-login { padding: 13px; background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); color: white; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59,130,246,0.3); }
+        .info-panel { background-color: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); padding: 14px; border-radius: 10px; margin-top: 12px; font-size: 11px; color: #cbd5e1; line-height: 1.7; }
+        .info-panel b { color: #93c5fd; }
+        .orange-panel { background-color: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.2); padding: 12px; border-radius: 10px; margin-top: 8px; font-size: 11px; color: #fdba74; }
+        .orange-panel a { color: #fb923c; font-weight: bold; }
 
-        .info-box {
-            background-color: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3);
-            padding: 20px; border-radius: 12px; margin-top: 16px; font-size: 12px; color: #cbd5e1; line-height: 1.7;
-        }
-        .info-title { font-weight: bold; font-size: 13px; margin-bottom: 8px; }
-
-        .user-app-link {
-            background-color: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.3);
-            padding: 14px; border-radius: 12px; margin-top: 12px; font-size: 11px; color: #fdba74; line-height: 1.6;
-        }
-        .user-app-link a { color: #fb923c; font-weight: bold; }
-
-        /* ── Dashboard ───────────────────────────────────────────── */
+        /* ── Dashboard ─────────────────────────────────────── */
         .dashboard      { display: none; height: 100vh; flex-direction: column; }
-        .dashboard.show { display: flex; flex-direction: column; }
-
-        .dash-header {
-            background: linear-gradient(to right, #1e293b, #0f172a);
-            border-bottom: 1px solid #334155;
-            padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-        }
-        .dash-left { display: flex; align-items: center; gap: 12px; }
-        .dash-logo {
-            width: 44px; height: 44px;
-            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-            border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px;
-        }
-        .dash-title { font-size: 18px; font-weight: 900; }
+        .dashboard.show { display: flex; }
+        .dash-hdr { background: linear-gradient(to right, #1e293b, #0f172a); border-bottom: 1px solid #334155; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .dash-left { display: flex; align-items: center; gap: 10px; }
+        .dash-logo { width: 38px; height: 38px; background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 19px; }
+        .dash-title { font-size: 16px; font-weight: 900; }
         .dash-sub   { font-size: 10px; color: #64748b; }
-
-        .dash-right { display: flex; align-items: center; gap: 12px; }
-
-        /* Firebase live badge */
-        .live-badge {
-            display: flex; align-items: center; gap: 6px;
-            background-color: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
-            border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: bold; color: #86efac;
-        }
-        .live-badge.offline {
-            background-color: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #fca5a5;
-        }
-        .live-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #22c55e; animation: blink 1s ease-in-out infinite; }
+        .dash-right { display: flex; align-items: center; gap: 8px; }
+        .live-badge { display: flex; align-items: center; gap: 5px; background-color: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 4px 10px; font-size: 10px; font-weight: bold; color: #86efac; }
+        .live-badge.offline { background-color: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #fca5a5; }
+        .live-dot     { width: 7px; height: 7px; border-radius: 50%; background-color: #22c55e; animation: blink 1s ease-in-out infinite; }
         .live-dot.off { background-color: #ef4444; animation: none; }
-
-        .hdr-btn {
-            padding: 7px 14px; background-color: #1e293b; color: #cbd5e1;
-            border: 1px solid #334155; border-radius: 8px;
-            cursor: pointer; font-weight: bold; font-size: 12px; transition: all 0.3s;
-        }
-        .hdr-btn.logout:hover { background-color: #dc2626; border-color: #dc2626; }
-
+        .hdr-btn { padding: 6px 12px; background-color: #1e293b; color: #cbd5e1; border: 1px solid #334155; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; transition: all 0.2s; }
+        .hdr-btn:hover { background-color: #334155; }
+        .hdr-btn.logout:hover   { background-color: #dc2626; border-color: #dc2626; }
+        .hdr-btn.settings:hover { border-color: #a855f7; color: #c084fc; }
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
         /* Stats bar */
-        .stats-bar {
-            background-color: rgba(30,41,59,0.5); border-bottom: 1px solid #334155;
-            padding: 14px 24px; display: flex; gap: 40px; align-items: center; flex-shrink: 0;
-        }
-        .stat-item { display: flex; align-items: center; gap: 10px; }
-        .stat-dot  { width: 14px; height: 14px; border-radius: 50%; animation: blink 2s ease-in-out infinite; }
+        .stats-bar { background-color: rgba(30,41,59,0.5); border-bottom: 1px solid #334155; padding: 10px 20px; display: flex; gap: 28px; align-items: center; flex-shrink: 0; }
+        .stat-item { display: flex; align-items: center; gap: 8px; }
+        .stat-dot  { width: 11px; height: 11px; border-radius: 50%; animation: blink 2s ease-in-out infinite; }
         .stat-dot.active   { background-color: #ef4444; }
         .stat-dot.resolved { background-color: #22c55e; }
-        .stat-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; }
-        .stat-value { font-size: 22px; font-weight: 900; }
+        .stat-dot.calls    { background-color: #a855f7; }
+        .stat-label { font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: bold; }
+        .stat-value { font-size: 19px; font-weight: 900; }
 
-        /* Main grid */
-        .main-grid { display: grid; grid-template-columns: 1fr 2fr 1fr; flex: 1; overflow: hidden; }
+        /* Grid */
+        .main-grid { display: grid; grid-template-columns: 270px 1fr 250px; flex: 1; overflow: hidden; }
 
         /* Left panel */
-        .alerts-panel {
-            border-right: 1px solid #334155; padding: 20px; overflow-y: auto;
-            display: flex; flex-direction: column; background-color: rgba(15,23,42,0.5);
-        }
-        .filter-row { display: flex; gap: 6px; margin-bottom: 20px; }
-        .filter-btn {
-            padding: 7px 12px; background-color: #1e293b; color: #cbd5e1;
-            border: 1px solid #334155; border-radius: 8px;
-            cursor: pointer; font-weight: bold; font-size: 11px; transition: all 0.3s;
-        }
+        .alerts-panel { border-right: 1px solid #334155; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; background-color: rgba(15,23,42,0.5); }
+        .filter-row { display: flex; gap: 4px; margin-bottom: 14px; }
+        .filter-btn { padding: 5px 9px; background-color: #1e293b; color: #cbd5e1; border: 1px solid #334155; border-radius: 7px; cursor: pointer; font-weight: bold; font-size: 10px; transition: all 0.2s; }
         .filter-btn.on { background-color: #3b82f6; border-color: #3b82f6; color: white; }
-
-        .alerts-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-
-        .alert-card {
-            background-color: #1e293b; border: 2px solid #334155;
-            border-radius: 14px; padding: 14px; cursor: pointer; transition: all 0.3s;
-        }
-        .alert-card:hover  { background-color: #334155; border-color: #475569; }
-        .alert-card.sel    { background-color: #334155; border-color: #3b82f6; box-shadow: 0 8px 20px rgba(59,130,246,0.2); }
+        .alerts-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; }
+        .alert-card { background-color: #1e293b; border: 2px solid #334155; border-radius: 12px; padding: 11px; cursor: pointer; transition: all 0.2s; }
+        .alert-card:hover { background-color: #334155; border-color: #475569; }
+        .alert-card.sel   { background-color: #1e3a5f; border-color: #3b82f6; }
         .alert-card.new-in { animation: newFlash 0.8s ease-out; }
-        @keyframes newFlash {
-            0%  { border-color: #ef4444; box-shadow: 0 0 24px rgba(239,68,68,0.7); }
-            100%{ border-color: #334155; box-shadow: none; }
-        }
-
-        .card-plate  { font-weight: 900; font-size: 15px; letter-spacing: 1px; }
-        .card-desc   { font-size: 10px; color: #cbd5e1; background-color: rgba(30,41,59,0.8); padding: 2px 7px; border-radius: 4px; }
-        .card-driver { font-size: 12px; color: #cbd5e1; margin: 6px 0 4px; }
-        .card-loc    { font-size: 11px; color: #64748b; }
-        .card-meta   { font-size: 10px; color: #475569; margin-top: 4px; }
-
-        .no-alerts { display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column; text-align: center; color: #64748b; gap: 10px; }
+        @keyframes newFlash { 0%{border-color:#ef4444;box-shadow:0 0 20px rgba(239,68,68,0.6);}100%{border-color:#334155;box-shadow:none;} }
+        .card-row   { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+        .card-plate { font-weight: 900; font-size: 13px; letter-spacing: 1px; }
+        .card-desc  { font-size: 9px; color: #cbd5e1; background-color: rgba(15,23,42,0.8); padding: 1px 5px; border-radius: 4px; }
+        .card-driver{ font-size: 11px; color: #94a3b8; margin: 2px 0; }
+        .card-loc   { font-size: 10px; color: #64748b; }
+        .card-meta  { font-size: 9px; color: #475569; margin-top: 3px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .call-pill  { font-size: 9px; font-weight: bold; padding: 1px 6px; border-radius: 10px; }
+        .call-pill.idle     { background-color: rgba(100,116,139,0.2); color: #64748b; }
+        .call-pill.calling  { background-color: rgba(168,85,247,0.2); color: #c084fc; animation: blink 1s infinite; }
+        .call-pill.answered { background-color: rgba(34,197,94,0.2); color: #86efac; }
+        .call-pill.failed   { background-color: rgba(239,68,68,0.2); color: #fca5a5; }
+        .call-pill.done     { background-color: rgba(59,130,246,0.2); color: #93c5fd; }
+        .no-alerts { display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column; text-align: center; color: #64748b; gap: 8px; }
 
         /* Centre panel */
-        .details-panel {
-            border-right: 1px solid #334155; padding: 20px; overflow-y: auto;
-            background-color: rgba(15,23,42,0.3); display: flex; flex-direction: column;
-        }
+        .details-panel { border-right: 1px solid #334155; padding: 14px; overflow-y: auto; background-color: rgba(15,23,42,0.3); display: flex; flex-direction: column; }
         .empty-det { display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; color: #64748b; flex-direction: column; gap: 10px; }
-        #detContent { flex-direction: column; flex: 1; overflow-y: auto; }
-
-        .det-tabs { display: flex; gap: 6px; margin-bottom: 14px; border-bottom: 1px solid #334155; flex-shrink: 0; }
-        .det-tab  { padding: 7px 12px; background: none; border: none; color: #64748b; cursor: pointer; font-size: 12px; font-weight: bold; border-bottom: 2px solid transparent; transition: all 0.3s; }
+        #detContent { flex-direction: column; flex: 1; }
+        .det-tabs { display: flex; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid #334155; }
+        .det-tab  { padding: 6px 12px; background: none; border: none; color: #64748b; cursor: pointer; font-size: 11px; font-weight: bold; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
         .det-tab.on { color: #3b82f6; border-bottom-color: #3b82f6; }
+        .det-tab.retell-tab.on { color: #a855f7; border-bottom-color: #a855f7; }
+        .tab-pane    { display: none; }
+        .tab-pane.on { display: block; }
+        .live-chip { display: inline-flex; align-items: center; gap: 5px; background-color: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 3px 8px; font-size: 9px; color: #86efac; margin-bottom: 8px; }
+        .live-chip span { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; animation: blink 1s infinite; display: inline-block; }
+        .ov-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 11px; margin-bottom: 9px; }
+        .ov-title { font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 7px; }
+        .ov-body  { font-size: 12px; color: #cbd5e1; line-height: 1.85; }
+        .ov-body strong { color: #e2e8f0; }
 
-        .tab-pane       { display: none; flex: 1; overflow-y: auto; }
-        .tab-pane.on    { display: block; }
-
-        /* Live chip */
-        .live-chip {
-            display: inline-flex; align-items: center; gap: 6px;
-            background-color: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3);
-            border-radius: 20px; padding: 4px 10px; font-size: 10px; color: #86efac; margin-bottom: 10px;
-        }
-        .live-chip span { width: 6px; height: 6px; border-radius: 50%; background-color: #22c55e; animation: blink 1s infinite; display: inline-block; }
-
-        /* Analytics card */
-        .a-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
-        .a-card-title { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 10px; }
-        .a-card-body  { font-size: 13px; color: #cbd5e1; line-height: 1.9; }
-        .a-card-body strong { color: #e2e8f0; }
+        /* ═══ RETELL PANEL ═══ */
+        .retell-panel { background: linear-gradient(135deg, rgba(88,28,135,0.15) 0%, rgba(30,41,59,0.8) 100%); border: 1px solid rgba(168,85,247,0.3); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+        .retell-hdr   { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .retell-title { font-size: 12px; font-weight: 900; color: #c084fc; display: flex; align-items: center; gap: 6px; }
+        .auto-row     { display: flex; align-items: center; gap: 7px; font-size: 10px; color: #94a3b8; }
+        .toggle { width: 34px; height: 18px; background-color: #334155; border-radius: 9px; position: relative; cursor: pointer; transition: background 0.3s; flex-shrink: 0; }
+        .toggle.on { background-color: #a855f7; }
+        .toggle::after { content:''; width:12px; height:12px; background:white; border-radius:50%; position:absolute; top:3px; left:3px; transition:transform 0.3s; }
+        .toggle.on::after { transform: translateX(16px); }
+        .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 10px; }
+        .svc-btn { padding: 9px 6px; border-radius: 10px; border: 1px solid rgba(168,85,247,0.3); background: rgba(88,28,135,0.2); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; }
+        .svc-btn:hover:not(:disabled) { background: rgba(168,85,247,0.3); border-color: rgba(168,85,247,0.6); transform: translateY(-1px); }
+        .svc-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .svc-btn.calling  { background: rgba(168,85,247,0.3); border-color: #a855f7; animation: blink 0.8s infinite; }
+        .svc-btn.answered { background: rgba(34,197,94,0.2); border-color: #22c55e; animation: none; }
+        .svc-btn.failed   { background: rgba(239,68,68,0.2); border-color: #ef4444; animation: none; }
+        .svc-btn.done     { background: rgba(59,130,246,0.15); border-color: #3b82f6; animation: none; }
+        .svc-icon   { font-size: 18px; }
+        .svc-name   { font-size: 10px; font-weight: bold; color: #e2e8f0; }
+        .svc-num    { font-size: 9px; color: #94a3b8; }
+        .svc-status { font-size: 9px; color: #c084fc; min-height: 12px; }
+        .wh-status  { display: flex; align-items: center; gap: 6px; font-size: 10px; padding: 6px 10px; border-radius: 8px; margin-top: 8px; }
+        .wh-status.ok   { background-color: rgba(34,197,94,0.1); color: #86efac; }
+        .wh-status.err  { background-color: rgba(239,68,68,0.1); color: #fca5a5; }
+        .wh-status.warn { background-color: rgba(168,85,247,0.1); color: #c084fc; }
+        .call-log-box { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; max-height: 160px; overflow-y: auto; }
+        .call-log-ttl { font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 6px; }
+        .call-log-entry { font-size: 10px; padding: 5px 7px; border-radius: 4px; margin-bottom: 4px; border-left: 2px solid #a855f7; background-color: rgba(168,85,247,0.05); color: #cbd5e1; line-height: 1.4; }
+        .call-log-ts    { color: #475569; font-size: 9px; }
 
         /* Notes */
-        .notes-box { background-color: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 14px; }
-        .notes-ttl { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #3b82f6; }
-        .notes-ta  { width: 100%; background-color: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 8px; color: #fff; font-family: Monaco, monospace; font-size: 11px; min-height: 70px; resize: vertical; transition: border-color 0.3s; }
+        .notes-box { background-color: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 11px; margin-bottom: 10px; }
+        .notes-ttl { font-size: 9px; font-weight: bold; text-transform: uppercase; margin-bottom: 7px; color: #3b82f6; }
+        .notes-ta  { width: 100%; background-color: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 8px; color: #fff; font-family: Monaco, monospace; font-size: 11px; min-height: 60px; resize: vertical; transition: border-color 0.2s; }
         .notes-ta:focus { outline: none; border-color: #3b82f6; }
         .notes-ta::placeholder { color: #64748b; }
-        .notes-log { margin-top: 10px; max-height: 150px; overflow-y: auto; }
-        .note-entry { background-color: #0f172a; padding: 8px 8px 8px 10px; border-radius: 4px; margin-bottom: 6px; font-size: 10px; border-left: 2px solid #3b82f6; }
+        .notes-log { margin-top: 8px; max-height: 120px; overflow-y: auto; }
+        .note-entry { background-color: #0f172a; padding: 5px 7px 5px 9px; border-radius: 4px; margin-bottom: 4px; font-size: 10px; border-left: 2px solid #3b82f6; }
         .note-ts { color: #64748b; font-size: 9px; }
         .note-txt{ color: #cbd5e1; margin-top: 2px; }
 
         /* Action buttons */
-        .act-btns { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; flex-shrink: 0; }
-        .act-btn  { padding: 11px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s; }
-        .btn-maps    { background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); color: white; }
-        .btn-maps:hover  { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(59,130,246,0.3); }
-        .btn-res     { background-color: #16a34a; color: white; }
+        .act-btns { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; flex-shrink: 0; }
+        .act-btn  { padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; }
+        .btn-maps  { background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); color: white; }
+        .btn-maps:hover  { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(59,130,246,0.3); }
+        .btn-res   { background-color: #16a34a; color: white; }
         .btn-res:hover   { background-color: #15803d; }
-        .btn-copy    { background-color: #334155; color: #cbd5e1; }
+        .btn-copy  { background-color: #334155; color: #cbd5e1; }
         .btn-copy:hover  { background-color: #475569; }
-        .btn-note    { background-color: #3b82f6; color: white; margin-top: 6px; }
+        .btn-note  { background-color: #3b82f6; color: white; margin-top: 4px; }
         .btn-note:hover  { background-color: #2563eb; }
 
-        /* Right panel */
-        .analytics-panel { padding: 20px; overflow-y: auto; background-color: rgba(15,23,42,0.5); display: flex; flex-direction: column; gap: 14px; }
-        .metric-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; }
-        .metric-title { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 10px; }
-        .metric-val   { font-size: 30px; font-weight: 900; color: #3b82f6; margin-bottom: 4px; }
-        .metric-unit  { font-size: 11px; color: #94a3b8; }
+        /* Right analytics */
+        .analytics-panel { padding: 14px; overflow-y: auto; background-color: rgba(15,23,42,0.5); display: flex; flex-direction: column; gap: 10px; }
+        .metric-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 13px; }
+        .metric-title { font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 7px; }
+        .metric-val   { font-size: 26px; font-weight: 900; color: #3b82f6; margin-bottom: 3px; }
+        .metric-val.purple { color: #a855f7; }
+        .metric-unit  { font-size: 10px; color: #94a3b8; }
+
+        /* Settings modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 50; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background-color: #0f172a; border: 1px solid #334155; border-radius: 18px; padding: 22px; width: 100%; max-width: 460px; max-height: 85vh; overflow-y: auto; animation: fadeUp 0.25s ease-out; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);} }
+        .modal-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .modal-title { font-size: 17px; font-weight: 900; }
+        .close-btn { background: none; border: none; color: #64748b; cursor: pointer; font-size: 22px; }
+        .close-btn:hover { color: #fff; }
+        .set-section { margin-bottom: 18px; }
+        .set-title { font-size: 10px; font-weight: bold; text-transform: uppercase; color: #a855f7; margin-bottom: 8px; }
+        .phone-row { display: flex; gap: 8px; align-items: center; margin-bottom: 7px; }
+        .phone-lbl { font-size: 11px; color: #94a3b8; width: 78px; flex-shrink: 0; }
+        .btn-save-settings { width: 100%; padding: 12px; background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: white; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; margin-top: 6px; transition: all 0.2s; }
+        .btn-save-settings:hover { transform: translateY(-1px); box-shadow: 0 8px 16px rgba(168,85,247,0.3); }
 
         /* Scrollbars */
-        .alerts-list::-webkit-scrollbar,
-        .details-panel::-webkit-scrollbar,
-        .analytics-panel::-webkit-scrollbar,
-        .notes-log::-webkit-scrollbar { width: 5px; }
-        .alerts-list::-webkit-scrollbar-thumb,
-        .details-panel::-webkit-scrollbar-thumb,
-        .analytics-panel::-webkit-scrollbar-thumb,
-        .notes-log::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
 
         /* Toast */
-        .toast { position: fixed; top: 20px; right: 20px; padding: 12px 22px; border-radius: 8px; font-weight: bold; z-index: 100; display: none; animation: toastIn 0.3s ease-out; font-size: 13px; }
+        .toast { position: fixed; top: 14px; right: 14px; padding: 9px 16px; border-radius: 8px; font-weight: bold; z-index: 100; display: none; animation: toastIn 0.3s ease-out; font-size: 12px; max-width: 280px; }
         .toast.show    { display: block; }
         .toast.success { background-color: #16a34a; }
         .toast.error   { background-color: #dc2626; }
         .toast.alert   { background-color: #dc2626; }
-        @keyframes toastIn { from{transform:translateX(100%);opacity:0;} to{transform:translateX(0);opacity:1;} }
-
+        .toast.purple  { background-color: #7c3aed; }
+        @keyframes toastIn { from{transform:translateX(110%);opacity:0;}to{transform:translateX(0);opacity:1;} }
         audio { display: none; }
     </style>
 </head>
 <body>
 
-<!-- ── Login ────────────────────────────────────────────────── -->
+<!-- ══ LOGIN ════════════════════════════════════════════════ -->
 <div id="loginContainer" class="login-container">
     <div class="login-box">
         <div class="login-header">
             <div class="logo-box">📡</div>
             <h1 class="login-title">SecureLink Dispatch</h1>
-            <p class="login-subtitle">Control Center — Firebase Live</p>
+            <p class="login-subtitle">Control Center + Retell AI Response Agent</p>
         </div>
 
         <form class="login-form" onsubmit="dc.handleLogin(event)">
-            <div class="input-wrapper">
-                <label class="input-label">Dispatcher Name</label>
-                <input type="text" placeholder="Officer Rodriguez" id="dispName" required>
+            <div class="iw">
+                <label class="il">Dispatcher Name</label>
+                <input type="text" id="dispName" placeholder="Officer Rodriguez" required>
             </div>
+
+            <div class="section-lbl">🤖 Make.com + Retell Setup</div>
+
+            <div class="iw">
+                <label class="il">Make.com Webhook URL</label>
+                <input type="url" id="webhookUrl" placeholder="https://hook.eu1.make.com/…" value="https://hook.eu1.make.com/phdt5uufktqhv7w2cxn2auwps964wkvv">
+            </div>
+            <div class="iw">
+                <label class="il">🚔 SAPS Number</label>
+                <input type="tel" id="sapsNum" placeholder="+27 10 111 0000">
+            </div>
+            <div class="iw">
+                <label class="il">🛡️ Armed Response Number</label>
+                <input type="tel" id="armedNum" placeholder="+27 XX XXX XXXX">
+            </div>
+            <div class="iw">
+                <label class="il">🚑 Medical / Ambulance Number</label>
+                <input type="tel" id="medNum" placeholder="+27 10 205 3000">
+            </div>
+            <div class="iw">
+                <label class="il">👨‍👩‍👧 Family / Emergency Contact</label>
+                <input type="tel" id="familyNum" placeholder="+27 XX XXX XXXX">
+            </div>
+
             <button type="submit" class="btn-login">📡 ACCESS DISPATCH CENTER</button>
         </form>
 
-        <div class="info-box">
-            <div class="info-title">🚀 Real-time Firebase Features</div>
-            ✓ Alerts appear the instant a user presses PANIC anywhere in the world<br>
-            ✓ GPS coordinates update live as the user moves<br>
-            ✓ Battery level and accuracy transmitted<br>
-            ✓ Resolve alerts — user sees the update immediately
+        <div class="info-panel">
+            <b>How the Retell AI agent works:</b><br>
+            PANIC fires → dispatch receives the alert → you click a service button →
+            Make.com webhook triggers → Retell calls the number and reads the full brief
+            (driver, vehicle, GPS, Maps link) to the operator. No manual calls needed.
         </div>
-
-        <div class="user-app-link">
-            📱 User app lives at:
-            <a href="https://tacsecurityservices.github.io/buttot/" target="_blank">
-                tacsecurityservices.github.io/buttot
-            </a><br>
-            Works on any phone, anywhere — fully cross-device via Firebase.
+        <div class="orange-panel">
+            📱 User app: <a href="https://tacsecurityservices.github.io/buttot/" target="_blank">tacsecurityservices.github.io/buttot</a>
         </div>
     </div>
 </div>
 
-<!-- ── Dashboard ─────────────────────────────────────────────── -->
+<!-- ══ DASHBOARD ════════════════════════════════════════════ -->
 <div id="dashboard" class="dashboard">
 
-    <div class="dash-header">
+    <div class="dash-hdr">
         <div class="dash-left">
             <div class="dash-logo">📡</div>
             <div>
@@ -283,31 +267,16 @@
                 <div class="live-dot" id="liveDot"></div>
                 <span id="liveTxt">Connecting…</span>
             </div>
-            <button class="hdr-btn logout" onclick="dc.logout()">🚪 Logout</button>
+            <button class="hdr-btn settings" onclick="dc.showSettings()">⚙️ Settings</button>
+            <button class="hdr-btn logout"   onclick="dc.logout()">🚪 Logout</button>
         </div>
     </div>
 
     <div class="stats-bar">
-        <div class="stat-item">
-            <div class="stat-dot active"></div>
-            <div>
-                <div class="stat-label">Active Alerts</div>
-                <div class="stat-value" id="activeCount">0</div>
-            </div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-dot resolved"></div>
-            <div>
-                <div class="stat-label">Resolved</div>
-                <div class="stat-value" id="resolvedCount">0</div>
-            </div>
-        </div>
-        <div class="stat-item">
-            <div>
-                <div class="stat-label">Last Update</div>
-                <div class="stat-value" id="lastUpdate" style="font-size:15px;">—</div>
-            </div>
-        </div>
+        <div class="stat-item"><div class="stat-dot active"></div><div><div class="stat-label">Active</div><div class="stat-value" id="activeCount">0</div></div></div>
+        <div class="stat-item"><div class="stat-dot resolved"></div><div><div class="stat-label">Resolved</div><div class="stat-value" id="resolvedCount">0</div></div></div>
+        <div class="stat-item"><div class="stat-dot calls"></div><div><div class="stat-label">AI Calls</div><div class="stat-value" id="callCount">0</div></div></div>
+        <div class="stat-item"><div><div class="stat-label">Last Update</div><div class="stat-value" id="lastUpdate" style="font-size:13px;">—</div></div></div>
     </div>
 
     <div class="main-grid">
@@ -316,14 +285,14 @@
         <div class="alerts-panel">
             <div class="filter-row">
                 <button class="filter-btn on" onclick="dc.setFilter('active',   event)">🔴 Active</button>
-                <button class="filter-btn"    onclick="dc.setFilter('resolved', event)">✅ Resolved</button>
+                <button class="filter-btn"    onclick="dc.setFilter('resolved', event)">✅ Done</button>
                 <button class="filter-btn"    onclick="dc.setFilter('all',      event)">📋 All</button>
             </div>
             <div class="alerts-list" id="alertsList">
                 <div class="no-alerts">
-                    <div style="font-size:36px;">📡</div>
+                    <div style="font-size:30px;">📡</div>
                     <div>Listening for alerts…</div>
-                    <div style="font-size:10px;color:#334155;">Any PANIC press will appear here instantly</div>
+                    <div style="font-size:10px;color:#334155;margin-top:4px;">PANIC presses appear instantly</div>
                 </div>
             </div>
         </div>
@@ -331,24 +300,50 @@
         <!-- Centre: Details -->
         <div class="details-panel">
             <div class="empty-det" id="emptyDet">
-                <div style="font-size:36px;">📋</div>
-                <div>Select an alert to view details</div>
+                <div style="font-size:30px;">📋</div>
+                <div>Select an alert</div>
+                <div style="font-size:11px;color:#475569;">Then use the 🤖 Retell tab to dispatch AI calls</div>
             </div>
 
             <div id="detContent" style="display:none;">
                 <div class="det-tabs">
-                    <button class="det-tab on"  onclick="dc.switchTab('overview',event)">📋 Overview</button>
-                    <button class="det-tab"     onclick="dc.switchTab('notes',   event)">📝 Log</button>
+                    <button class="det-tab on"         onclick="dc.switchTab('overview', event)">📋 Overview</button>
+                    <button class="det-tab retell-tab" onclick="dc.switchTab('retell',   event)">🤖 Retell Agent</button>
+                    <button class="det-tab"            onclick="dc.switchTab('notes',    event)">📝 Log</button>
                 </div>
+
                 <div id="tab-overview" class="tab-pane on"></div>
-                <div id="tab-notes"    class="tab-pane">
+
+                <div id="tab-retell" class="tab-pane">
+                    <div class="retell-panel">
+                        <div class="retell-hdr">
+                            <div class="retell-title">🤖 Retell AI Response Agent</div>
+                            <div style="font-size:9px;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);color:#86efac;padding:3px 9px;border-radius:10px;font-weight:bold;">
+                                ⚡ AUTO — fires on every PANIC
+                            </div>
+                        </div>
+                        <div style="font-size:10px;color:#94a3b8;margin-bottom:10px;line-height:1.6;">
+                            Calls fire <strong style="color:#c084fc;">automatically</strong> the moment a user presses PANIC —
+                            no dispatcher action needed. Use the buttons below only to re-call a service manually if needed.
+                        </div>
+                        <div class="services-grid" id="servicesGrid"></div>
+                        <div class="wh-status" id="whStatus" style="display:none;"></div>
+                    </div>
+                    <div class="call-log-box">
+                        <div class="call-log-ttl">📞 Call Log</div>
+                        <div id="callLog"><div style="font-size:10px;color:#334155;">No calls yet for this alert</div></div>
+                    </div>
+                </div>
+
+                <div id="tab-notes" class="tab-pane">
                     <div class="notes-box">
                         <div class="notes-ttl">📝 Dispatch Notes</div>
-                        <textarea class="notes-ta" id="noteInput" placeholder="'SAPS notified', 'Unit en route', 'Arrived on scene'…"></textarea>
-                        <button class="act-btn btn-note" onclick="dc.saveNote()">💾 Save Note</button>
+                        <textarea class="notes-ta" id="noteInput" placeholder="'SAPS notified', 'Unit en route'…"></textarea>
+                        <button class="act-btn btn-note" onclick="dc.saveNote()" style="margin-top:8px;">💾 Save Note</button>
                         <div class="notes-log" id="notesLog"></div>
                     </div>
                 </div>
+
                 <div class="act-btns">
                     <button class="act-btn btn-maps" onclick="dc.openMaps()">🗺️ View on Maps</button>
                     <button class="act-btn btn-res"  id="resolveBtn" onclick="dc.resolveAlert()" style="display:none;">✅ Resolve Alert</button>
@@ -359,35 +354,64 @@
 
         <!-- Right: Analytics -->
         <div class="analytics-panel">
-            <h3 style="font-size:14px;font-weight:900;margin-bottom:4px;">📊 Session Analytics</h3>
+            <h3 style="font-size:13px;font-weight:900;">📊 Analytics</h3>
+            <div class="metric-card"><div class="metric-title">Total Incidents</div><div class="metric-val" id="totalInc">0</div><div class="metric-unit">this session</div></div>
+            <div class="metric-card"><div class="metric-title">Resolution Rate</div><div class="metric-val" id="resRate">—</div><div class="metric-unit">alerts resolved</div></div>
+            <div class="metric-card"><div class="metric-title">AI Calls Dispatched</div><div class="metric-val purple" id="totalCalls">0</div><div class="metric-unit">via Retell agent</div></div>
+            <div class="metric-card"><div class="metric-title">Avg Response Time</div><div class="metric-val" id="avgTime" style="font-size:16px;">—</div><div class="metric-unit">alert-to-resolve</div></div>
 
-            <div class="metric-card">
-                <div class="metric-title">Total Incidents</div>
-                <div class="metric-val"  id="totalInc">0</div>
-                <div class="metric-unit">active + resolved</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-title">Resolution Rate</div>
-                <div class="metric-val"  id="resRate">—</div>
-                <div class="metric-unit">of all alerts resolved</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-title">Avg Response Time</div>
-                <div class="metric-val"  id="avgTime" style="font-size:22px;">—</div>
-                <div class="metric-unit">alert-to-resolve</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-title" style="margin-bottom:8px;">🔗 User App</div>
-                <div style="font-size:11px;color:#94a3b8;line-height:1.7;">
-                    <a href="https://tacsecurityservices.github.io/buttot/" target="_blank"
-                       style="color:#f97316;font-weight:bold;">
-                        tacsecurityservices.github.io/buttot
-                    </a><br>
-                    Share with users — works on any device worldwide via Firebase.
+            <div class="metric-card" style="border-color:rgba(168,85,247,0.3);">
+                <div class="metric-title" style="color:#a855f7;">🔗 Make.com Setup</div>
+                <div style="font-size:10px;color:#94a3b8;line-height:1.8;">
+                    <b style="color:#c084fc;">Scenario steps:</b><br>
+                    1️⃣ Webhook (receives alert)<br>
+                    2️⃣ HTTP POST → Retell API<br>
+                    &nbsp;&nbsp;<code style="font-size:9px;color:#818cf8;">POST /v2/create-phone-call</code><br>
+                    3️⃣ Parse call_id response<br><br>
+                    <b style="color:#c084fc;">Retell dynamic vars:</b><br>
+                    <code style="font-size:9px;color:#818cf8;">driver_name, vehicle_reg,<br>vehicle_desc, gps_coords,<br>maps_link, battery</code><br><br>
+                    <a href="https://tacsecurityservices.github.io/buttot/" target="_blank" style="color:#f97316;font-weight:bold;">User app ↗</a>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
+<!-- ══ SETTINGS MODAL ════════════════════════════════════════ -->
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal-box">
+        <div class="modal-hdr">
+            <h3 class="modal-title">⚙️ Settings</h3>
+            <button class="close-btn" onclick="dc.hideSettings()">×</button>
+        </div>
+
+        <div class="set-section">
+            <div class="set-title">🤖 Make.com Webhook</div>
+            <div class="iw"><label class="il">Webhook URL</label><input type="url" id="settingsWebhook" placeholder="https://hook.eu1.make.com/…" value="https://hook.eu1.make.com/phdt5uufktqhv7w2cxn2auwps964wkvv"></div>
+            <div style="font-size:10px;color:#64748b;margin-top:6px;line-height:1.6;">
+                In Make.com: create a new scenario → add a <b>Webhooks</b> trigger → copy the URL here.
+                Then add an <b>HTTP</b> module that POSTs to <code style="color:#818cf8;">https://api.retellai.com/v2/create-phone-call</code>
+                with your Retell API key in the Authorization header.
+            </div>
+        </div>
+
+        <div class="set-section">
+            <div class="set-title">📞 Support Numbers</div>
+            <div class="phone-row"><span class="phone-lbl">🚔 SAPS</span><div class="iw" style="flex:1;"><input type="tel" id="settingsSaps" placeholder="+27 10 111 0000"></div></div>
+            <div class="phone-row"><span class="phone-lbl">🛡️ Armed</span><div class="iw" style="flex:1;"><input type="tel" id="settingsArmed" placeholder="+27 XX XXX XXXX"></div></div>
+            <div class="phone-row"><span class="phone-lbl">🚑 Medical</span><div class="iw" style="flex:1;"><input type="tel" id="settingsMed" placeholder="+27 10 205 3000"></div></div>
+            <div class="phone-row"><span class="phone-lbl">👨‍👩‍👧 Family</span><div class="iw" style="flex:1;"><input type="tel" id="settingsFamily" placeholder="+27 XX XXX XXXX"></div></div>
+        </div>
+
+        <div class="set-section">
+            <div class="set-title">🔄 Auto-Call on New Alert</div>
+            <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:#94a3b8;">
+                <div class="toggle" id="settingsAutoToggle" onclick="this.classList.toggle('on')"></div>
+                <div>Automatically call <b style="color:#e2e8f0;">Armed Response</b> when a new PANIC arrives</div>
+            </div>
+        </div>
+
+        <button class="btn-save-settings" onclick="dc.saveSettings()">💾 Save Settings</button>
     </div>
 </div>
 
@@ -395,10 +419,9 @@
 <audio id="alertSnd" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBT+P1fLIeDEGIXfH8N2RQgsc"></audio>
 
 <script type="module">
-import { initializeApp }                          from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, onValue, update }      from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { initializeApp }                     from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
-// ── Firebase config ────────────────────────────────────────
 const firebaseConfig = {
     apiKey:            "AIzaSyAAHkSygnrYJF4axl2Mc-1wsE7erkI5tSc",
     authDomain:        "punic-button-4428e.firebaseapp.com",
@@ -410,18 +433,21 @@ const firebaseConfig = {
     measurementId:     "G-LZY15XKQL5"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const db          = getDatabase(firebaseApp);
+const firebase = initializeApp(firebaseConfig);
+const db       = getDatabase(firebase);
 
-// ── Dispatch controller ────────────────────────────────────
 const dc = window.dc = {
     dispatcherName: '',
     isLoggedIn:     false,
-    allAlerts:      {},        // keyed by alertId
+    allAlerts:      {},
     selectedId:     null,
     filterStatus:   'active',
-    notes:          {},        // alertId → [note, …]  (in-memory, not in Firebase)
+    notes:          {},
+    callLogs:       {},
     knownIds:       new Set(),
+    totalCallsMade: 0,
+
+    cfg: { webhookUrl:'https://hook.eu1.make.com/phdt5uufktqhv7w2cxn2auwps964wkvv', sapsNum:'', armedNum:'', medNum:'', familyNum:'', autoCall: false },
 
     // ── Login ─────────────────────────────────────────────
     handleLogin(e) {
@@ -430,6 +456,12 @@ const dc = window.dc = {
         if (!name) { this.toast('❌ Enter your name', 'error'); return; }
         this.dispatcherName = name;
         this.isLoggedIn     = true;
+        this.cfg.webhookUrl = document.getElementById('webhookUrl').value.trim();
+        this.cfg.sapsNum    = document.getElementById('sapsNum').value.trim();
+        this.cfg.armedNum   = document.getElementById('armedNum').value.trim();
+        this.cfg.medNum     = document.getElementById('medNum').value.trim();
+        this.cfg.familyNum  = document.getElementById('familyNum').value.trim();
+        this.saveConfig();
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('dashboard').classList.add('show');
         document.getElementById('dispTitle').textContent = name;
@@ -444,6 +476,25 @@ const dc = window.dc = {
         document.getElementById('dispName').value = '';
     },
 
+    // ── Config ────────────────────────────────────────────
+    saveConfig() { localStorage.setItem('sl-dcfg', JSON.stringify(this.cfg)); },
+    loadConfig() {
+        const raw = localStorage.getItem('sl-dcfg');
+        if (!raw) {
+            // First load — pre-fill the login form with known webhook
+            document.getElementById('webhookUrl').value = this.cfg.webhookUrl;
+            return;
+        }
+        this.cfg = { ...this.cfg, ...JSON.parse(raw) };
+        // Always keep webhook if saved config somehow lost it
+        if (!this.cfg.webhookUrl) this.cfg.webhookUrl = 'https://hook.eu1.make.com/phdt5uufktqhv7w2cxn2auwps964wkvv';
+        document.getElementById('webhookUrl').value = this.cfg.webhookUrl;
+        document.getElementById('sapsNum').value    = this.cfg.sapsNum    || '';
+        document.getElementById('armedNum').value   = this.cfg.armedNum   || '';
+        document.getElementById('medNum').value     = this.cfg.medNum     || '';
+        document.getElementById('familyNum').value  = this.cfg.familyNum  || '';
+    },
+
     // ── Toast ─────────────────────────────────────────────
     toast(msg, type = 'info') {
         const el = document.getElementById('toast');
@@ -452,54 +503,42 @@ const dc = window.dc = {
         setTimeout(() => el.classList.remove('show'), 4000);
     },
 
-    // ── Firebase real-time listener ────────────────────────
-    // onValue fires immediately with current data, then again on every change
+    // ── Firebase ──────────────────────────────────────────
     startListening() {
-        // Connection state
         onValue(ref(db, '.info/connected'), snap => {
-            const online = snap.val();
-            const badge  = document.getElementById('liveBadge');
-            document.getElementById('liveDot').className  = 'live-dot' + (online ? '' : ' off');
-            document.getElementById('liveTxt').textContent = online ? 'FIREBASE LIVE' : 'OFFLINE';
-            badge.className = 'live-badge' + (online ? '' : ' offline');
+            const on = snap.val();
+            document.getElementById('liveDot').className   = 'live-dot' + (on ? '' : ' off');
+            document.getElementById('liveTxt').textContent = on ? 'FIREBASE LIVE' : 'OFFLINE';
+            document.getElementById('liveBadge').className = 'live-badge' + (on ? '' : ' offline');
         });
 
-        // All alerts — this single listener covers every create, update, delete
         onValue(ref(db, 'alerts'), snap => {
             const raw = snap.val() || {};
 
-            // Detect brand-new active alerts
+            // Detect new alerts — just notify dispatcher, calls already fired from user app
             Object.values(raw).forEach(a => {
                 if (a.status === 'active' && !this.knownIds.has(a.alertId)) {
                     this.knownIds.add(a.alertId);
                     if (this.isLoggedIn) {
                         document.getElementById('alertSnd').play().catch(() => {});
-                        this.toast(`🚨 NEW: ${a.userName} ${a.userSurname} — ${a.vehicleReg}`, 'alert');
-                        // Flash new card after render
+                        this.toast(`🚨 ${a.userName} ${a.userSurname} — ${a.vehicleReg} • AI calling services…`, 'alert');
                         setTimeout(() => {
                             const el = document.querySelector(`[data-id="${a.alertId}"]`);
-                            if (el) { el.classList.add('new-in'); setTimeout(() => el.classList.remove('new-in'), 1000); }
-                        }, 150);
+                            if (el) { el.classList.add('new-in'); setTimeout(() => el.classList.remove('new-in'), 900); }
+                        }, 120);
                     }
                 }
             });
 
-            this.allAlerts = raw;
-
-            // Refresh selected alert's data (live location update)
+            // Refresh live location line
             if (this.selectedId && raw[this.selectedId]) {
-                const fresh = raw[this.selectedId];
-                fresh.notes = this.notes[this.selectedId] || [];
-                // Update only the location line in overview without full re-render
-                const locEl = document.getElementById('det-live-loc');
-                if (locEl) {
-                    locEl.textContent = `${fresh.location?.lat?.toFixed(6) ?? '--'}, ${fresh.location?.lng?.toFixed(6) ?? '--'} (±${fresh.location?.accuracy ?? '--'}m)`;
-                }
-                // Update resolve button if status changed
-                document.getElementById('resolveBtn').style.display =
-                    fresh.status === 'active' ? 'flex' : 'none';
+                const a = raw[this.selectedId];
+                const el = document.getElementById('det-live-loc');
+                if (el) el.textContent = `${a.location?.lat?.toFixed(6) ?? '--'}, ${a.location?.lng?.toFixed(6) ?? '--'} (±${a.location?.accuracy ?? '--'}m)`;
+                document.getElementById('resolveBtn').style.display = a.status === 'active' ? 'flex' : 'none';
             }
 
+            this.allAlerts = raw;
             this.render();
             this.updateStats();
             document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
@@ -514,40 +553,33 @@ const dc = window.dc = {
         this.render();
     },
 
-    // ── Render alerts list ────────────────────────────────
+    // ── Render list ───────────────────────────────────────
     render() {
-        const list   = document.getElementById('alertsList');
+        const list = document.getElementById('alertsList');
         const alerts = Object.values(this.allAlerts)
-            .filter(a =>
-                this.filterStatus === 'all'      ? true :
-                this.filterStatus === 'active'   ? a.status === 'active' :
-                                                   a.status === 'resolved')
+            .filter(a => this.filterStatus === 'all' ? true : a.status === this.filterStatus)
             .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         if (!alerts.length) {
-            list.innerHTML = `
-                <div class="no-alerts">
-                    <div style="font-size:36px;">📡</div>
-                    <div>No ${this.filterStatus === 'all' ? '' : this.filterStatus} alerts</div>
-                    <div style="font-size:10px;color:#334155;margin-top:6px;">PANIC presses appear here instantly</div>
-                </div>`;
+            list.innerHTML = `<div class="no-alerts"><div style="font-size:30px;">📡</div><div>No ${this.filterStatus === 'all' ? '' : this.filterStatus} alerts</div></div>`;
             return;
         }
 
         list.innerHTML = alerts.map(a => {
-            const ago = this.timeAgo(a.timestamp);
+            const logs    = this.callLogs[a.alertId] || [];
+            const last    = logs[logs.length - 1];
+            const pill    = last ? `<span class="call-pill ${last.status}">📞 ${last.service}</span>` : '';
+            const ago     = this.timeAgo(a.timestamp);
             return `
-            <div class="alert-card ${this.selectedId === a.alertId ? 'sel' : ''}"
-                 data-id="${a.alertId}"
-                 onclick="dc.select('${a.alertId}')">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                    <span style="font-size:15px;">${a.status === 'active' ? '🚨' : '✅'}</span>
+            <div class="alert-card ${this.selectedId === a.alertId ? 'sel' : ''}" data-id="${a.alertId}" onclick="dc.select('${a.alertId}')">
+                <div class="card-row">
+                    <span style="font-size:13px;">${a.status === 'active' ? '🚨' : '✅'}</span>
                     <span class="card-plate">${a.vehicleReg ?? '--'}</span>
                     <span class="card-desc">${a.vehicleColor ?? ''} ${a.vehicleMake ?? ''}</span>
                 </div>
                 <div class="card-driver">👤 ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
                 <div class="card-loc">📍 ${a.location?.lat?.toFixed(4) ?? '--'}, ${a.location?.lng?.toFixed(4) ?? '--'}</div>
-                <div class="card-meta">🕐 ${ago}${a.battery ? '  🔋 ' + a.battery + '%' : ''}</div>
+                <div class="card-meta">🕐 ${ago}${a.battery ? `  🔋 ${a.battery}%` : ''} ${pill}</div>
             </div>`;
         }).join('');
     },
@@ -555,17 +587,17 @@ const dc = window.dc = {
     timeAgo(ts) {
         if (!ts) return '';
         const s = Math.floor((Date.now() - new Date(ts)) / 1000);
-        if (s < 60)   return s + 's ago';
+        if (s < 60) return s + 's ago';
         if (s < 3600) return Math.floor(s / 60) + 'm ago';
         return Math.floor(s / 3600) + 'h ago';
     },
 
-    // ── Select alert ──────────────────────────────────────
-    select(alertId) {
-        this.selectedId = alertId;
+    // ── Select ────────────────────────────────────────────
+    select(id) {
+        this.selectedId = id;
         this.render();
         this.renderDetails();
-        document.getElementById('emptyDet').style.display  = 'none';
+        document.getElementById('emptyDet').style.display   = 'none';
         document.getElementById('detContent').style.display = 'flex';
     },
 
@@ -575,134 +607,291 @@ const dc = window.dc = {
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('on'));
         if (e?.target) e.target.classList.add('on');
         document.getElementById('tab-' + name).classList.add('on');
+        if (name === 'retell') this.renderRetell();
     },
 
-    // ── Render details ────────────────────────────────────
+    // ── Overview ──────────────────────────────────────────
     renderDetails() {
         const a = this.allAlerts[this.selectedId];
         if (!a) return;
 
         document.getElementById('tab-overview').innerHTML = `
-            <div style="display:flex;flex-direction:column;gap:10px;padding-top:4px;">
-                ${a.status === 'active' ? `
-                <div class="live-chip">
-                    <span></span> LIVE — location updates in real time via Firebase
-                </div>` : ''}
-
-                <div class="a-card">
-                    <div class="a-card-title">👤 Driver</div>
-                    <div class="a-card-body">
-                        <div><strong>Name:</strong> ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
-                        <div><strong>User ID:</strong> ${a.userId ?? '--'}</div>
-                    </div>
-                </div>
-
-                <div class="a-card">
-                    <div class="a-card-title">🚗 Vehicle</div>
-                    <div class="a-card-body">
-                        <div><strong>Plate:</strong>  ${a.vehicleReg   ?? '--'}</div>
-                        <div><strong>Make:</strong>   ${a.vehicleMake  ?? '--'}</div>
-                        <div><strong>Color:</strong>  ${a.vehicleColor ?? '--'}</div>
-                    </div>
-                </div>
-
-                <div class="a-card">
-                    <div class="a-card-title">📍 Location</div>
-                    <div class="a-card-body">
-                        <div><strong>Coordinates:</strong>
-                            <span id="det-live-loc">
-                                ${a.location?.lat?.toFixed(6) ?? '--'}, ${a.location?.lng?.toFixed(6) ?? '--'} (±${a.location?.accuracy ?? '--'}m)
-                            </span>
-                        </div>
-                        <div><strong>Battery:</strong>   ${a.battery ?? '--'}%</div>
-                        <div><strong>Alert ID:</strong>  ${a.alertId ?? '--'}</div>
-                        <div><strong>Triggered:</strong> ${a.timestamp  ? new Date(a.timestamp).toLocaleString() : '--'}</div>
-                        <div><strong>Last GPS:</strong>  ${a.lastSeen   ? new Date(a.lastSeen).toLocaleString()  : '--'}</div>
-                        ${a.resolvedAt ? `<div><strong>Resolved:</strong> ${new Date(a.resolvedAt).toLocaleString()}</div>` : ''}
-                        ${a.resolvedBy ? `<div><strong>By:</strong> ${a.resolvedBy}</div>` : ''}
-                    </div>
-                </div>
+            <div style="display:flex;flex-direction:column;gap:9px;padding-top:4px;">
+                ${a.status === 'active' ? `<div class="live-chip"><span></span> LIVE — GPS updates in real time</div>` : ''}
+                <div class="ov-card"><div class="ov-title">👤 Driver</div><div class="ov-body">
+                    <div><strong>Name:</strong> ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
+                    <div><strong>User ID:</strong> ${a.userId ?? '--'}</div>
+                </div></div>
+                <div class="ov-card"><div class="ov-title">🚗 Vehicle</div><div class="ov-body">
+                    <div><strong>Plate:</strong>  ${a.vehicleReg   ?? '--'}</div>
+                    <div><strong>Make:</strong>   ${a.vehicleMake  ?? '--'}</div>
+                    <div><strong>Color:</strong>  ${a.vehicleColor ?? '--'}</div>
+                </div></div>
+                <div class="ov-card"><div class="ov-title">📍 Location</div><div class="ov-body">
+                    <div><strong>Coordinates:</strong> <span id="det-live-loc">${a.location?.lat?.toFixed(6) ?? '--'}, ${a.location?.lng?.toFixed(6) ?? '--'} (±${a.location?.accuracy ?? '--'}m)</span></div>
+                    <div><strong>Battery:</strong>   ${a.battery ?? '--'}%</div>
+                    <div><strong>Triggered:</strong> ${a.timestamp ? new Date(a.timestamp).toLocaleString() : '--'}</div>
+                    <div><strong>Last GPS:</strong>  ${a.lastSeen  ? new Date(a.lastSeen).toLocaleString()  : '--'}</div>
+                    ${a.resolvedAt ? `<div><strong>Resolved:</strong> ${new Date(a.resolvedAt).toLocaleString()}</div>` : ''}
+                    ${a.resolvedBy ? `<div><strong>By:</strong> ${a.resolvedBy}</div>` : ''}
+                </div></div>
             </div>`;
 
-        // Reset to overview tab
         document.querySelectorAll('.det-tab').forEach(t => t.classList.remove('on'));
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('on'));
         document.querySelector('.det-tab').classList.add('on');
         document.getElementById('tab-overview').classList.add('on');
-
         this.renderNotes();
+        this.renderRetell();
         document.getElementById('resolveBtn').style.display = a.status === 'active' ? 'flex' : 'none';
     },
 
-    // ── Notes (stored in memory only) ────────────────────
+    // ══════════════════════════════════════════════════════
+    //  RETELL / MAKE.COM PANEL
+    // ══════════════════════════════════════════════════════
+    renderRetell() {
+        const a = this.allAlerts[this.selectedId];
+        if (!a) return;
+
+        const hasWebhook = !!this.cfg.webhookUrl;
+        const isActive   = a.status === 'active';
+        const logs       = this.callLogs[this.selectedId] || [];
+
+        const services = [
+            { id:'saps',   icon:'🚔', name:'SAPS',           num: this.cfg.sapsNum   },
+            { id:'armed',  icon:'🛡️', name:'Armed Response',  num: this.cfg.armedNum  },
+            { id:'med',    icon:'🚑', name:'Medical',         num: this.cfg.medNum    },
+            { id:'family', icon:'👨‍👩‍👧', name:'Family',          num: this.cfg.familyNum },
+        ];
+
+        document.getElementById('servicesGrid').innerHTML = services.map(svc => {
+            const last   = [...logs].reverse().find(l => l.service === svc.name);
+            const status = last?.status ?? 'idle';
+            const label  = {
+                idle:     !svc.num ? '⚠️ No number set' : !hasWebhook ? '⚠️ No webhook' : 'Tap to call',
+                calling:  '📞 Calling…',
+                answered: '✅ Connected',
+                failed:   '❌ Failed',
+                done:     '✓ Done'
+            }[status] ?? 'Tap to call';
+            const disabled = (!hasWebhook || !svc.num || !isActive) ? 'disabled' : '';
+            return `
+            <button class="svc-btn ${status}" ${disabled} onclick="dc.triggerCall('${svc.name}','${svc.num}')">
+                <div class="svc-icon">${svc.icon}</div>
+                <div class="svc-name">${svc.name}</div>
+                <div class="svc-num">${svc.num || '—'}</div>
+                <div class="svc-status">${label}</div>
+            </button>`;
+        }).join('');
+
+        // Auto toggle state
+        const tog = document.getElementById('autoCallToggle');
+        if (tog) tog.className = 'toggle' + (this.cfg.autoCall ? ' on' : '');
+
+        // Webhook status
+        const ws = document.getElementById('whStatus');
+        if (!hasWebhook) {
+            ws.style.display   = 'flex';
+            ws.className       = 'wh-status err';
+            ws.textContent     = '⚠️ No Make.com webhook — go to Settings';
+        } else if (!isActive) {
+            ws.style.display   = 'flex';
+            ws.className       = 'wh-status warn';
+            ws.textContent     = '✅ Alert resolved — call buttons disabled';
+        } else {
+            ws.style.display   = 'none';
+        }
+
+        this.renderCallLog();
+    },
+
+    renderCallLog() {
+        const el   = document.getElementById('callLog');
+        if (!el) return;
+        const logs = this.callLogs[this.selectedId] || [];
+        if (!logs.length) { el.innerHTML = '<div style="font-size:10px;color:#334155;">No calls yet for this alert</div>'; return; }
+        el.innerHTML = [...logs].reverse().map(l => `
+            <div class="call-log-entry">
+                <div class="call-log-ts">${new Date(l.ts).toLocaleTimeString()} — ${l.dispatcher}</div>
+                <div>${l.icon} <strong>${l.service}</strong> ${l.num}
+                    — <span style="color:${l.status==='answered'?'#86efac':l.status==='failed'?'#fca5a5':'#c084fc'}">${l.statusLabel}</span>
+                </div>
+                ${l.callId ? `<div style="color:#334155;font-size:9px;">Call ID: ${l.callId}</div>` : ''}
+            </div>`).join('');
+    },
+
+    // ── TRIGGER CALL via Make.com → Retell ────────────────
+    async triggerCall(serviceName, phoneNum, alertOverride) {
+        const a = alertOverride ?? this.allAlerts[this.selectedId];
+        if (!a)             { this.toast('⚠️ No alert selected', 'error'); return; }
+        if (!this.cfg.webhookUrl) { this.toast('⚠️ Add Make.com webhook in Settings', 'error'); return; }
+        if (!phoneNum)      { this.toast(`⚠️ No number set for ${serviceName}`, 'error'); return; }
+
+        const mapsLink = `https://www.google.com/maps?q=${a.location?.lat},${a.location?.lng}`;
+
+        // ── Payload sent to Make.com ──────────────────────
+        // Make.com receives this, passes it to Retell's /v2/create-phone-call
+        // The retellVars object maps 1-to-1 to your Retell agent's dynamic variables
+        const payload = {
+            // Full alert context
+            alertId:      a.alertId,
+            timestamp:    a.timestamp,
+            // Driver
+            userName:     a.userName,
+            userSurname:  a.userSurname,
+            userId:       a.userId,
+            // Vehicle
+            vehicleReg:   a.vehicleReg,
+            vehicleMake:  a.vehicleMake,
+            vehicleColor: a.vehicleColor,
+            // Location
+            latitude:     a.location?.lat,
+            longitude:    a.location?.lng,
+            accuracy:     a.location?.accuracy,
+            mapsLink,
+            battery:      a.battery,
+            // Call target
+            callTarget:       serviceName,
+            phoneNumber:      phoneNum,
+            dispatcherName:   this.dispatcherName,
+            // ── Retell dynamic variable block ──────────────
+            // In Make.com HTTP module → Body → retellVars
+            // Map each key to the matching {{variable}} in your Retell prompt
+            retellVars: {
+                driver_name:    `${a.userName} ${a.userSurname}`,
+                vehicle_reg:    a.vehicleReg,
+                vehicle_desc:   `${a.vehicleColor} ${a.vehicleMake}`,
+                gps_coords:     `${a.location?.lat?.toFixed(5)}, ${a.location?.lng?.toFixed(5)}`,
+                maps_link:      mapsLink,
+                battery:        String(a.battery ?? '--'),
+                service_name:   serviceName,
+                dispatcher:     this.dispatcherName
+            }
+        };
+
+        // Add optimistic log entry
+        const icons = { SAPS:'🚔', 'Armed Response':'🛡️', Medical:'🚑', Family:'👨‍👩‍👧' };
+        const entry = {
+            ts: new Date().toISOString(), service: serviceName, num: phoneNum,
+            icon: icons[serviceName] ?? '📞', status: 'calling',
+            statusLabel: 'Calling via Retell…', dispatcher: this.dispatcherName, callId: null
+        };
+        if (!this.callLogs[a.alertId]) this.callLogs[a.alertId] = [];
+        this.callLogs[a.alertId].push(entry);
+        this.totalCallsMade++;
+        this.renderRetell();
+        this.render();
+        this.toast(`📞 Retell agent calling ${serviceName}…`, 'purple');
+        document.getElementById('callCount').textContent  = this.totalCallsMade;
+        document.getElementById('totalCalls').textContent = this.totalCallsMade;
+
+        // Write to Firebase
+        update(ref(db, `alerts/${a.alertId}/calls/${Date.now()}`), {
+            service: serviceName, phone: phoneNum,
+            dispatcher: this.dispatcherName, status: 'calling', ts: entry.ts
+        }).catch(() => {});
+
+        // Fire the Make.com webhook
+        try {
+            const res = await fetch(this.cfg.webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+                let callId = null;
+                try { const j = await res.json(); callId = j?.call_id ?? j?.id ?? null; } catch(_) {}
+                entry.status      = 'answered';
+                entry.statusLabel = 'Call connected ✅';
+                entry.callId      = callId;
+                this.toast(`✅ ${serviceName} connected via Retell`, 'success');
+            } else {
+                entry.status      = 'failed';
+                entry.statusLabel = `HTTP ${res.status} — check Make.com logs`;
+                this.toast(`❌ Webhook error ${res.status}`, 'error');
+            }
+        } catch(err) {
+            entry.status      = 'failed';
+            entry.statusLabel = 'Network error — check webhook URL';
+            this.toast(`❌ Could not reach Make.com`, 'error');
+        }
+
+        this.renderRetell();
+        this.render();
+    },
+
+    toggleAutoCall() {
+        this.cfg.autoCall = !this.cfg.autoCall;
+        document.getElementById('autoCallToggle').className = 'toggle' + (this.cfg.autoCall ? ' on' : '');
+        this.saveConfig();
+        this.toast(this.cfg.autoCall ? '🤖 Auto-call ON' : '🤖 Auto-call OFF', 'purple');
+    },
+
+    // ── Settings modal ────────────────────────────────────
+    showSettings() {
+        document.getElementById('settingsWebhook').value  = this.cfg.webhookUrl || '';
+        document.getElementById('settingsSaps').value     = this.cfg.sapsNum    || '';
+        document.getElementById('settingsArmed').value    = this.cfg.armedNum   || '';
+        document.getElementById('settingsMed').value      = this.cfg.medNum     || '';
+        document.getElementById('settingsFamily').value   = this.cfg.familyNum  || '';
+        document.getElementById('settingsAutoToggle').className = 'toggle' + (this.cfg.autoCall ? ' on' : '');
+        document.getElementById('settingsModal').classList.add('show');
+    },
+    hideSettings() { document.getElementById('settingsModal').classList.remove('show'); },
+    saveSettings() {
+        this.cfg.webhookUrl = document.getElementById('settingsWebhook').value.trim();
+        this.cfg.sapsNum    = document.getElementById('settingsSaps').value.trim();
+        this.cfg.armedNum   = document.getElementById('settingsArmed').value.trim();
+        this.cfg.medNum     = document.getElementById('settingsMed').value.trim();
+        this.cfg.familyNum  = document.getElementById('settingsFamily').value.trim();
+        this.cfg.autoCall   = document.getElementById('settingsAutoToggle').classList.contains('on');
+        this.saveConfig();
+        this.hideSettings();
+        this.toast('✅ Settings saved', 'success');
+        if (this.selectedId) this.renderRetell();
+    },
+
+    // ── Notes ─────────────────────────────────────────────
     saveNote() {
         const text = document.getElementById('noteInput').value.trim();
-        if (!text) { this.toast('❌ Note cannot be empty', 'error'); return; }
+        if (!text) { this.toast('❌ Empty note', 'error'); return; }
         if (!this.notes[this.selectedId]) this.notes[this.selectedId] = [];
-        this.notes[this.selectedId].push({
-            ts:   new Date().toISOString(),
-            text,
-            by:   this.dispatcherName
-        });
+        this.notes[this.selectedId].push({ ts: new Date().toISOString(), text, by: this.dispatcherName });
         document.getElementById('noteInput').value = '';
         this.renderNotes();
         this.toast('✅ Note saved', 'success');
     },
-
     renderNotes() {
-        const el    = document.getElementById('notesLog');
+        const el = document.getElementById('notesLog');
         if (!el) return;
-        const notes = this.notes[this.selectedId] || [];
-        el.innerHTML = notes.map(n => `
-            <div class="note-entry">
-                <div class="note-ts">${new Date(n.ts).toLocaleTimeString()} — ${n.by}</div>
-                <div class="note-txt">${n.text}</div>
-            </div>`
+        (this.notes[this.selectedId] || []).forEach(n => {
+            el.innerHTML += `<div class="note-entry"><div class="note-ts">${new Date(n.ts).toLocaleTimeString()} — ${n.by}</div><div class="note-txt">${n.text}</div></div>`;
+        });
+        el.innerHTML = (this.notes[this.selectedId] || []).map(n =>
+            `<div class="note-entry"><div class="note-ts">${new Date(n.ts).toLocaleTimeString()} — ${n.by}</div><div class="note-txt">${n.text}</div></div>`
         ).join('');
     },
 
     // ── Actions ───────────────────────────────────────────
     openMaps() {
         const a = this.allAlerts[this.selectedId];
-        if (!a) return;
-        const { lat, lng } = a.location ?? {};
-        if (lat == null) { this.toast('❌ No location data', 'error'); return; }
-        window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+        if (!a?.location?.lat) { this.toast('❌ No location', 'error'); return; }
+        window.open(`https://www.google.com/maps?q=${a.location.lat},${a.location.lng}`, '_blank');
     },
-
     copyDetails() {
-        const a = this.allAlerts[this.selectedId];
-        if (!a) return;
-        const text =
-            `SECURELINK ALERT\n` +
-            `Driver:   ${a.userName} ${a.userSurname}\n` +
-            `Vehicle:  ${a.vehicleReg} — ${a.vehicleColor} ${a.vehicleMake}\n` +
-            `Location: ${a.location?.lat?.toFixed(6)}, ${a.location?.lng?.toFixed(6)}\n` +
-            `Maps:     https://www.google.com/maps?q=${a.location?.lat},${a.location?.lng}\n` +
-            `Time:     ${new Date(a.timestamp).toLocaleString()}\n` +
-            `Battery:  ${a.battery ?? '--'}%`;
-        navigator.clipboard.writeText(text)
-            .then(() => this.toast('📋 Copied!', 'success'))
-            .catch(() => this.toast('❌ Copy failed', 'error'));
+        const a = this.allAlerts[this.selectedId]; if (!a) return;
+        const text = `SECURELINK EMERGENCY\nDriver: ${a.userName} ${a.userSurname}\nVehicle: ${a.vehicleReg} — ${a.vehicleColor} ${a.vehicleMake}\nGPS: ${a.location?.lat?.toFixed(6)}, ${a.location?.lng?.toFixed(6)}\nMaps: https://www.google.com/maps?q=${a.location?.lat},${a.location?.lng}\nBattery: ${a.battery ?? '--'}%\nTime: ${new Date(a.timestamp).toLocaleString()}`;
+        navigator.clipboard.writeText(text).then(() => this.toast('📋 Copied!', 'success')).catch(() => this.toast('❌ Copy failed', 'error'));
     },
-
     async resolveAlert() {
-        const a = this.allAlerts[this.selectedId];
-        if (!a) return;
+        const a = this.allAlerts[this.selectedId]; if (!a) return;
         try {
-            // Write resolution to Firebase — user app will see status change instantly
-            await update(ref(db, 'alerts/' + a.alertId), {
-                status:     'resolved',
-                resolvedBy: this.dispatcherName,
-                resolvedAt: new Date().toISOString()
-            });
+            await update(ref(db, 'alerts/' + a.alertId), { status: 'resolved', resolvedBy: this.dispatcherName, resolvedAt: new Date().toISOString() });
             this.selectedId = null;
             document.getElementById('emptyDet').style.display   = 'flex';
             document.getElementById('detContent').style.display = 'none';
-            this.toast(`✅ Alert resolved by ${this.dispatcherName}`, 'success');
-        } catch(e) {
-            this.toast('❌ Could not resolve — check internet', 'error');
-        }
+            this.toast(`✅ Resolved by ${this.dispatcherName}`, 'success');
+        } catch(e) { this.toast('❌ Could not resolve', 'error'); }
     },
 
     // ── Stats ─────────────────────────────────────────────
@@ -711,31 +900,22 @@ const dc = window.dc = {
         const active   = all.filter(a => a.status === 'active').length;
         const resolved = all.filter(a => a.status === 'resolved').length;
         const total    = all.length;
-
-        document.getElementById('activeCount').textContent  = active;
-        document.getElementById('resolvedCount').textContent= resolved;
-        document.getElementById('totalInc').textContent     = total;
-        document.getElementById('resRate').textContent      = total > 0 ? Math.round(resolved / total * 100) + '%' : '—';
-
-        const times = all
-            .filter(a => a.resolvedAt && a.timestamp)
-            .map(a => new Date(a.resolvedAt) - new Date(a.timestamp));
-
+        document.getElementById('activeCount').textContent   = active;
+        document.getElementById('resolvedCount').textContent = resolved;
+        document.getElementById('totalInc').textContent      = total;
+        document.getElementById('resRate').textContent       = total > 0 ? Math.round(resolved / total * 100) + '%' : '—';
+        const times = all.filter(a => a.resolvedAt && a.timestamp).map(a => new Date(a.resolvedAt) - new Date(a.timestamp));
         if (times.length) {
             const avg = times.reduce((s,t) => s+t, 0) / times.length;
-            const h   = Math.floor(avg / 3600000);
-            const m   = Math.floor((avg % 3600000) / 60000);
-            const s   = Math.floor((avg % 60000)   / 1000);
-            document.getElementById('avgTime').textContent =
-                `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-        } else {
-            document.getElementById('avgTime').textContent = '—';
-        }
-    }
+            const h = Math.floor(avg/3600000), m = Math.floor((avg%3600000)/60000), s = Math.floor((avg%60000)/1000);
+            document.getElementById('avgTime').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        } else document.getElementById('avgTime').textContent = '—';
+    },
+
+    init() { this.loadConfig(); }
 };
 
-// expose for inline onclick
-window.dc = dc;
+dc.init();
 </script>
 </body>
 </html>
