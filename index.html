@@ -16,44 +16,25 @@
         }
 
         /* ── Login ─────────────────────────────────────────────── */
-        .login-container {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
-
-        .login-box { width: 100%; max-width: 400px; }
-
-        .login-header { text-align: center; margin-bottom: 48px; }
-
+        .login-container { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .login-box { width: 100%; max-width: 420px; }
+        .login-header { text-align: center; margin-bottom: 40px; }
         .logo-box {
             width: 80px; height: 80px;
             background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-            border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 24px;
-            font-size: 40px;
+            border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px; font-size: 40px;
             box-shadow: 0 10px 20px rgba(59,130,246,0.3);
         }
-
-        .login-title    { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+        .login-title    { font-size: 28px; font-weight: 900; margin-bottom: 6px; }
         .login-subtitle { color: #94a3b8; font-size: 12px; }
 
-        .login-form { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
-
+        .login-form { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
         .input-wrapper {
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
+            background-color: #1e293b; border: 1px solid #334155;
+            border-radius: 12px; padding: 12px; display: flex; flex-direction: column;
         }
-
         .input-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
-
         .input-wrapper input { background: transparent; border: none; outline: none; color: #fff; font-size: 14px; }
         .input-wrapper input::placeholder { color: #64748b; }
 
@@ -61,675 +42,700 @@
             padding: 16px;
             background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
             color: white; font-weight: bold; border: none; border-radius: 12px;
-            cursor: pointer; transition: all 0.3s ease;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px;
         }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59,130,246,0.3); }
 
         .info-box {
-            background-color: rgba(59,130,246,0.1);
-            border: 1px solid rgba(59,130,246,0.3);
-            padding: 24px; border-radius: 12px; margin-top: 24px;
+            background-color: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3);
+            padding: 20px; border-radius: 12px; margin-top: 16px; font-size: 12px; color: #cbd5e1; line-height: 1.7;
         }
-        .info-title { font-weight: bold; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; }
-        .info-list  { font-size: 13px; color: #cbd5e1; display: flex; flex-direction: column; gap: 6px; }
+        .info-title { font-weight: bold; font-size: 13px; margin-bottom: 8px; }
 
-        /* ── Dashboard shell ─────────────────────────────────────── */
+        .user-app-link {
+            background-color: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.3);
+            padding: 14px; border-radius: 12px; margin-top: 12px; font-size: 11px; color: #fdba74; line-height: 1.6;
+        }
+        .user-app-link a { color: #fb923c; font-weight: bold; }
+
+        /* ── Dashboard ───────────────────────────────────────────── */
         .dashboard      { display: none; height: 100vh; flex-direction: column; }
         .dashboard.show { display: flex; flex-direction: column; }
 
-        .dashboard-header {
+        .dash-header {
             background: linear-gradient(to right, #1e293b, #0f172a);
             border-bottom: 1px solid #334155;
-            padding: 16px 24px;
-            display: flex; align-items: center; justify-content: space-between;
-            flex-shrink: 0;
+            padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
         }
-
-        .header-left { display: flex; align-items: center; gap: 12px; }
-
-        .header-logo {
-            width: 48px; height: 48px;
+        .dash-left { display: flex; align-items: center; gap: 12px; }
+        .dash-logo {
+            width: 44px; height: 44px;
             background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
+            border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px;
         }
+        .dash-title { font-size: 18px; font-weight: 900; }
+        .dash-sub   { font-size: 10px; color: #64748b; }
 
-        .header-text h1 { font-size: 20px; font-weight: 900; }
-        .header-text p  { font-size: 10px; color: #64748b; }
+        .dash-right { display: flex; align-items: center; gap: 12px; }
 
-        .header-btn {
-            padding: 8px 16px;
-            background-color: #1e293b; color: #cbd5e1;
+        /* Firebase live badge */
+        .live-badge {
+            display: flex; align-items: center; gap: 6px;
+            background-color: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
+            border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: bold; color: #86efac;
+        }
+        .live-badge.offline {
+            background-color: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #fca5a5;
+        }
+        .live-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #22c55e; animation: blink 1s ease-in-out infinite; }
+        .live-dot.off { background-color: #ef4444; animation: none; }
+
+        .hdr-btn {
+            padding: 7px 14px; background-color: #1e293b; color: #cbd5e1;
             border: 1px solid #334155; border-radius: 8px;
-            cursor: pointer; font-weight: bold; font-size: 12px;
-            transition: all 0.3s ease;
+            cursor: pointer; font-weight: bold; font-size: 12px; transition: all 0.3s;
         }
-        .logout-btn:hover { background-color: #dc2626; border-color: #dc2626; }
+        .hdr-btn.logout:hover { background-color: #dc2626; border-color: #dc2626; }
 
-        /* ── Stats bar ───────────────────────────────────────────── */
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+        /* Stats bar */
         .stats-bar {
-            background-color: rgba(30,41,59,0.5);
-            border-bottom: 1px solid #334155;
-            padding: 16px 24px;
-            display: flex; gap: 48px; align-items: center;
-            flex-shrink: 0;
+            background-color: rgba(30,41,59,0.5); border-bottom: 1px solid #334155;
+            padding: 14px 24px; display: flex; gap: 40px; align-items: center; flex-shrink: 0;
         }
-
-        .stat-item    { display: flex; align-items: center; gap: 12px; }
-        .stat-content { display: flex; flex-direction: column; }
-        .stat-label   { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; }
-        .stat-value   { font-size: 24px; font-weight: 900; color: white; }
-
-        .stat-dot { width: 16px; height: 16px; border-radius: 50%; animation: blink 2s ease-in-out infinite; }
+        .stat-item { display: flex; align-items: center; gap: 10px; }
+        .stat-dot  { width: 14px; height: 14px; border-radius: 50%; animation: blink 2s ease-in-out infinite; }
         .stat-dot.active   { background-color: #ef4444; }
         .stat-dot.resolved { background-color: #22c55e; }
+        .stat-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; }
+        .stat-value { font-size: 22px; font-weight: 900; }
 
-        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        /* Main grid */
+        .main-grid { display: grid; grid-template-columns: 1fr 2fr 1fr; flex: 1; overflow: hidden; }
 
-        /* ── Main grid ───────────────────────────────────────────── */
-        .dashboard-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        /* ── Left panel ──────────────────────────────────────────── */
+        /* Left panel */
         .alerts-panel {
-            border-right: 1px solid #334155;
-            padding: 24px; overflow-y: auto;
-            display: flex; flex-direction: column;
-            background-color: rgba(15,23,42,0.5);
+            border-right: 1px solid #334155; padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; background-color: rgba(15,23,42,0.5);
         }
-
-        .filter-buttons { display: flex; gap: 8px; margin-bottom: 24px; }
-
+        .filter-row { display: flex; gap: 6px; margin-bottom: 20px; }
         .filter-btn {
-            padding: 8px 16px;
-            background-color: #1e293b; color: #cbd5e1;
+            padding: 7px 12px; background-color: #1e293b; color: #cbd5e1;
             border: 1px solid #334155; border-radius: 8px;
-            cursor: pointer; font-weight: bold; font-size: 12px;
-            transition: all 0.3s ease;
+            cursor: pointer; font-weight: bold; font-size: 11px; transition: all 0.3s;
         }
-        .filter-btn.active { background-color: #3b82f6; border-color: #3b82f6; color: white; }
+        .filter-btn.on { background-color: #3b82f6; border-color: #3b82f6; color: white; }
 
-        .alerts-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .alerts-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
 
         .alert-card {
             background-color: #1e293b; border: 2px solid #334155;
-            border-radius: 16px; padding: 16px; cursor: pointer; transition: all 0.3s ease;
+            border-radius: 14px; padding: 14px; cursor: pointer; transition: all 0.3s;
         }
         .alert-card:hover  { background-color: #334155; border-color: #475569; }
-        .alert-card.active { background-color: #334155; border-color: #3b82f6; box-shadow: 0 10px 20px rgba(59,130,246,0.2); }
-
-        .alert-vehicle { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-        .alert-plate   { font-weight: 900; font-size: 16px; letter-spacing: 1px; }
-        .alert-vehicle-desc {
-            font-size: 11px; color: #cbd5e1;
-            background-color: rgba(30,41,59,0.8);
-            padding: 2px 8px; border-radius: 4px;
-        }
-        .alert-driver   { font-size: 12px; color: #cbd5e1; margin-bottom: 8px; }
-        .alert-location { font-size: 11px; color: #64748b; }
-
-        .no-alerts {
-            display: flex; align-items: center; justify-content: center;
-            height: 100%; flex-direction: column; text-align: center; color: #64748b; gap: 8px;
+        .alert-card.sel    { background-color: #334155; border-color: #3b82f6; box-shadow: 0 8px 20px rgba(59,130,246,0.2); }
+        .alert-card.new-in { animation: newFlash 0.8s ease-out; }
+        @keyframes newFlash {
+            0%  { border-color: #ef4444; box-shadow: 0 0 24px rgba(239,68,68,0.7); }
+            100%{ border-color: #334155; box-shadow: none; }
         }
 
-        /* ── Centre panel ────────────────────────────────────────── */
+        .card-plate  { font-weight: 900; font-size: 15px; letter-spacing: 1px; }
+        .card-desc   { font-size: 10px; color: #cbd5e1; background-color: rgba(30,41,59,0.8); padding: 2px 7px; border-radius: 4px; }
+        .card-driver { font-size: 12px; color: #cbd5e1; margin: 6px 0 4px; }
+        .card-loc    { font-size: 11px; color: #64748b; }
+        .card-meta   { font-size: 10px; color: #475569; margin-top: 4px; }
+
+        .no-alerts { display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column; text-align: center; color: #64748b; gap: 10px; }
+
+        /* Centre panel */
         .details-panel {
-            border-right: 1px solid #334155;
-            padding: 24px; overflow-y: auto;
-            background-color: rgba(15,23,42,0.3);
-            display: flex; flex-direction: column;
+            border-right: 1px solid #334155; padding: 20px; overflow-y: auto;
+            background-color: rgba(15,23,42,0.3); display: flex; flex-direction: column;
         }
+        .empty-det { display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; color: #64748b; flex-direction: column; gap: 10px; }
+        #detContent { flex-direction: column; flex: 1; overflow-y: auto; }
 
-        .empty-details {
-            display: flex; align-items: center; justify-content: center;
-            height: 100%; text-align: center; color: #64748b;
+        .det-tabs { display: flex; gap: 6px; margin-bottom: 14px; border-bottom: 1px solid #334155; flex-shrink: 0; }
+        .det-tab  { padding: 7px 12px; background: none; border: none; color: #64748b; cursor: pointer; font-size: 12px; font-weight: bold; border-bottom: 2px solid transparent; transition: all 0.3s; }
+        .det-tab.on { color: #3b82f6; border-bottom-color: #3b82f6; }
+
+        .tab-pane       { display: none; flex: 1; overflow-y: auto; }
+        .tab-pane.on    { display: block; }
+
+        /* Live chip */
+        .live-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            background-color: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3);
+            border-radius: 20px; padding: 4px 10px; font-size: 10px; color: #86efac; margin-bottom: 10px;
         }
+        .live-chip span { width: 6px; height: 6px; border-radius: 50%; background-color: #22c55e; animation: blink 1s infinite; display: inline-block; }
 
-        #detailsContent { flex-direction: column; flex: 1; overflow-y: auto; }
+        /* Analytics card */
+        .a-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+        .a-card-title { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 10px; }
+        .a-card-body  { font-size: 13px; color: #cbd5e1; line-height: 1.9; }
+        .a-card-body strong { color: #e2e8f0; }
 
-        .detail-tabs {
-            display: flex; gap: 8px; margin-bottom: 16px;
-            border-bottom: 1px solid #334155; flex-shrink: 0;
-        }
+        /* Notes */
+        .notes-box { background-color: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 14px; }
+        .notes-ttl { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #3b82f6; }
+        .notes-ta  { width: 100%; background-color: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 8px; color: #fff; font-family: Monaco, monospace; font-size: 11px; min-height: 70px; resize: vertical; transition: border-color 0.3s; }
+        .notes-ta:focus { outline: none; border-color: #3b82f6; }
+        .notes-ta::placeholder { color: #64748b; }
+        .notes-log { margin-top: 10px; max-height: 150px; overflow-y: auto; }
+        .note-entry { background-color: #0f172a; padding: 8px 8px 8px 10px; border-radius: 4px; margin-bottom: 6px; font-size: 10px; border-left: 2px solid #3b82f6; }
+        .note-ts { color: #64748b; font-size: 9px; }
+        .note-txt{ color: #cbd5e1; margin-top: 2px; }
 
-        .detail-tab {
-            padding: 8px 12px; background: none; border: none; color: #64748b;
-            cursor: pointer; font-size: 12px; font-weight: bold;
-            border-bottom: 2px solid transparent; transition: all 0.3s ease;
-        }
-        .detail-tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
-
-        .tab-content        { display: none; flex: 1; overflow-y: auto; }
-        .tab-content.active { display: block; }
-
-        /* ── Dispatch notes ──────────────────────────────────────── */
-        .dispatch-notes {
-            background-color: #1e293b; border: 1px solid #334155;
-            border-radius: 8px; padding: 12px; margin-bottom: 16px;
-        }
-        .notes-title {
-            font-size: 11px; font-weight: bold; text-transform: uppercase;
-            margin-bottom: 8px; color: #3b82f6;
-        }
-        .notes-textarea {
-            width: 100%; background-color: #0f172a; border: 1px solid #334155;
-            border-radius: 6px; padding: 8px; color: #fff;
-            font-family: 'Monaco', monospace; font-size: 11px;
-            min-height: 80px; resize: vertical; transition: border-color 0.3s ease;
-        }
-        .notes-textarea:focus { outline: none; border-color: #3b82f6; }
-        .notes-textarea::placeholder { color: #64748b; }
-
-        .notes-log { margin-top: 12px; max-height: 160px; overflow-y: auto; }
-
-        .note-entry {
-            background-color: #0f172a; padding: 8px 8px 8px 10px;
-            border-radius: 4px; margin-bottom: 8px; font-size: 10px;
-            border-left: 2px solid #3b82f6;
-        }
-        .note-time { color: #64748b; font-size: 9px; }
-        .note-text { color: #cbd5e1; margin-top: 2px; }
-
-        /* ── Action buttons ──────────────────────────────────────── */
-        .action-buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; flex-shrink: 0; }
-
-        .action-btn {
-            padding: 12px; border: none; border-radius: 8px; font-weight: bold;
-            cursor: pointer; font-size: 12px;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            transition: all 0.3s ease;
-        }
+        /* Action buttons */
+        .act-btns { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; flex-shrink: 0; }
+        .act-btn  { padding: 11px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s; }
         .btn-maps    { background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); color: white; }
-        .btn-maps:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59,130,246,0.3); }
-        .btn-resolve { background-color: #16a34a; color: white; }
-        .btn-resolve:hover { background-color: #15803d; }
+        .btn-maps:hover  { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(59,130,246,0.3); }
+        .btn-res     { background-color: #16a34a; color: white; }
+        .btn-res:hover   { background-color: #15803d; }
         .btn-copy    { background-color: #334155; color: #cbd5e1; }
         .btn-copy:hover  { background-color: #475569; }
-        .btn-save-note   { background-color: #3b82f6; color: white; margin-top: 8px; }
-        .btn-save-note:hover { background-color: #2563eb; }
+        .btn-note    { background-color: #3b82f6; color: white; margin-top: 6px; }
+        .btn-note:hover  { background-color: #2563eb; }
 
-        /* ── Right panel – Analytics ─────────────────────────────── */
-        .analytics-panel {
-            padding: 24px; overflow-y: auto;
-            background-color: rgba(15,23,42,0.5);
-            display: flex; flex-direction: column; gap: 16px;
-        }
-
-        .analytics-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; }
-
-        .card-title   { font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 12px; }
-        .metric-value { font-size: 32px; font-weight: 900; color: #3b82f6; margin-bottom: 4px; }
+        /* Right panel */
+        .analytics-panel { padding: 20px; overflow-y: auto; background-color: rgba(15,23,42,0.5); display: flex; flex-direction: column; gap: 14px; }
+        .metric-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; }
+        .metric-title { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: bold; margin-bottom: 10px; }
+        .metric-val   { font-size: 30px; font-weight: 900; color: #3b82f6; margin-bottom: 4px; }
         .metric-unit  { font-size: 11px; color: #94a3b8; }
 
-        /* ── Scrollbars ──────────────────────────────────────────── */
+        /* Scrollbars */
         .alerts-list::-webkit-scrollbar,
         .details-panel::-webkit-scrollbar,
         .analytics-panel::-webkit-scrollbar,
-        .notes-log::-webkit-scrollbar { width: 6px; }
-
-        .alerts-list::-webkit-scrollbar-track,
-        .details-panel::-webkit-scrollbar-track,
-        .analytics-panel::-webkit-scrollbar-track,
-        .notes-log::-webkit-scrollbar-track { background: transparent; }
-
+        .notes-log::-webkit-scrollbar { width: 5px; }
         .alerts-list::-webkit-scrollbar-thumb,
         .details-panel::-webkit-scrollbar-thumb,
         .analytics-panel::-webkit-scrollbar-thumb,
         .notes-log::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
 
-        /* ── Notification toast ──────────────────────────────────── */
-        .notification {
-            position: fixed; top: 24px; right: 24px;
-            padding: 12px 24px; border-radius: 8px; font-weight: bold;
-            z-index: 100; display: none; animation: slideIn 0.3s ease-out;
-        }
-        .notification.show    { display: block; }
-        .notification.success { background-color: #16a34a; }
-        .notification.error   { background-color: #dc2626; }
-        .notification.alert   { background-color: #dc2626; }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to   { transform: translateX(0);    opacity: 1; }
-        }
+        /* Toast */
+        .toast { position: fixed; top: 20px; right: 20px; padding: 12px 22px; border-radius: 8px; font-weight: bold; z-index: 100; display: none; animation: toastIn 0.3s ease-out; font-size: 13px; }
+        .toast.show    { display: block; }
+        .toast.success { background-color: #16a34a; }
+        .toast.error   { background-color: #dc2626; }
+        .toast.alert   { background-color: #dc2626; }
+        @keyframes toastIn { from{transform:translateX(100%);opacity:0;} to{transform:translateX(0);opacity:1;} }
 
         audio { display: none; }
     </style>
 </head>
 <body>
 
-<!-- ── Login ────────────────────────────────────────────────────────── -->
+<!-- ── Login ────────────────────────────────────────────────── -->
 <div id="loginContainer" class="login-container">
     <div class="login-box">
         <div class="login-header">
             <div class="logo-box">📡</div>
-            <h1 class="login-title">SecureLink</h1>
-            <p class="login-subtitle">Dispatch Control Center v3.1</p>
+            <h1 class="login-title">SecureLink Dispatch</h1>
+            <p class="login-subtitle">Control Center — Firebase Live</p>
         </div>
 
-        <form class="login-form" onsubmit="dispatch.handleLogin(event)">
+        <form class="login-form" onsubmit="dc.handleLogin(event)">
             <div class="input-wrapper">
                 <label class="input-label">Dispatcher Name</label>
-                <input type="text" placeholder="Officer Rodriguez" id="dispatcherName" required>
+                <input type="text" placeholder="Officer Rodriguez" id="dispName" required>
             </div>
             <button type="submit" class="btn-login">📡 ACCESS DISPATCH CENTER</button>
         </form>
 
         <div class="info-box">
-            <div class="info-title">🚀 Features</div>
-            <div class="info-list">
-                <div>✓ Live emergency alert monitoring</div>
-                <div>✓ Dispatch notes &amp; communication logs</div>
-                <div>✓ Incident resolution tracking</div>
-                <div>✓ Google Maps integration</div>
-            </div>
+            <div class="info-title">🚀 Real-time Firebase Features</div>
+            ✓ Alerts appear the instant a user presses PANIC anywhere in the world<br>
+            ✓ GPS coordinates update live as the user moves<br>
+            ✓ Battery level and accuracy transmitted<br>
+            ✓ Resolve alerts — user sees the update immediately
+        </div>
+
+        <div class="user-app-link">
+            📱 User app lives at:
+            <a href="https://tacsecurityservices.github.io/buttot/" target="_blank">
+                tacsecurityservices.github.io/buttot
+            </a><br>
+            Works on any phone, anywhere — fully cross-device via Firebase.
         </div>
     </div>
 </div>
 
-<!-- ── Dashboard ────────────────────────────────────────────────────── -->
+<!-- ── Dashboard ─────────────────────────────────────────────── -->
 <div id="dashboard" class="dashboard">
 
-    <!-- Header -->
-    <div class="dashboard-header">
-        <div class="header-left">
-            <div class="header-logo">📡</div>
-            <div class="header-text">
-                <h1>SecureLink Dispatch</h1>
-                <p>Control Center • <span id="dispatcherTitle">Officer</span></p>
+    <div class="dash-header">
+        <div class="dash-left">
+            <div class="dash-logo">📡</div>
+            <div>
+                <div class="dash-title">SecureLink Dispatch</div>
+                <div class="dash-sub">Control Center • <span id="dispTitle">Officer</span></div>
             </div>
         </div>
-        <button class="header-btn logout-btn" onclick="dispatch.handleLogout()">🚪 Logout</button>
+        <div class="dash-right">
+            <div class="live-badge" id="liveBadge">
+                <div class="live-dot" id="liveDot"></div>
+                <span id="liveTxt">Connecting…</span>
+            </div>
+            <button class="hdr-btn logout" onclick="dc.logout()">🚪 Logout</button>
+        </div>
     </div>
 
-    <!-- Stats -->
     <div class="stats-bar">
         <div class="stat-item">
             <div class="stat-dot active"></div>
-            <div class="stat-content">
+            <div>
                 <div class="stat-label">Active Alerts</div>
                 <div class="stat-value" id="activeCount">0</div>
             </div>
         </div>
         <div class="stat-item">
             <div class="stat-dot resolved"></div>
-            <div class="stat-content">
-                <div class="stat-label">Resolved Today</div>
+            <div>
+                <div class="stat-label">Resolved</div>
                 <div class="stat-value" id="resolvedCount">0</div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div>
+                <div class="stat-label">Last Update</div>
+                <div class="stat-value" id="lastUpdate" style="font-size:15px;">—</div>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="dashboard-content">
+    <div class="main-grid">
 
-        <!-- Left: Alerts List -->
+        <!-- Left: Alerts -->
         <div class="alerts-panel">
-            <div class="filter-buttons">
-                <button class="filter-btn active" onclick="dispatch.setFilter('active',   event)">🔴 Active</button>
-                <button class="filter-btn"        onclick="dispatch.setFilter('resolved', event)">✅ Resolved</button>
-                <button class="filter-btn"        onclick="dispatch.setFilter('all',      event)">📋 All</button>
+            <div class="filter-row">
+                <button class="filter-btn on" onclick="dc.setFilter('active',   event)">🔴 Active</button>
+                <button class="filter-btn"    onclick="dc.setFilter('resolved', event)">✅ Resolved</button>
+                <button class="filter-btn"    onclick="dc.setFilter('all',      event)">📋 All</button>
             </div>
             <div class="alerts-list" id="alertsList">
                 <div class="no-alerts">
-                    <div>📡</div>
-                    <div>No alerts</div>
-                    <div style="font-size:11px;">Waiting for emergency signals…</div>
+                    <div style="font-size:36px;">📡</div>
+                    <div>Listening for alerts…</div>
+                    <div style="font-size:10px;color:#334155;">Any PANIC press will appear here instantly</div>
                 </div>
             </div>
         </div>
 
         <!-- Centre: Details -->
         <div class="details-panel">
-            <div class="empty-details" id="emptyDetails">
-                Select an alert to view details
+            <div class="empty-det" id="emptyDet">
+                <div style="font-size:36px;">📋</div>
+                <div>Select an alert to view details</div>
             </div>
 
-            <div id="detailsContent" style="display:none;">
-                <div class="detail-tabs">
-                    <button class="detail-tab active" onclick="dispatch.switchTab('overview', event)">📋 Overview</button>
-                    <button class="detail-tab"        onclick="dispatch.switchTab('notes',    event)">📝 Dispatch Log</button>
+            <div id="detContent" style="display:none;">
+                <div class="det-tabs">
+                    <button class="det-tab on"  onclick="dc.switchTab('overview',event)">📋 Overview</button>
+                    <button class="det-tab"     onclick="dc.switchTab('notes',   event)">📝 Log</button>
                 </div>
-
-                <div id="tab-overview" class="tab-content active"></div>
-
-                <div id="tab-notes" class="tab-content">
-                    <div class="dispatch-notes">
-                        <div class="notes-title">📝 Internal Dispatch Log</div>
-                        <textarea class="notes-textarea" id="dispatchNotes"
-                            placeholder="Add updates: 'SAPS notified', 'Contacting family', 'Unit arrived at scene'…"></textarea>
-                        <button class="action-btn btn-save-note" onclick="dispatch.saveDispatchNote()">💾 Save Note</button>
+                <div id="tab-overview" class="tab-pane on"></div>
+                <div id="tab-notes"    class="tab-pane">
+                    <div class="notes-box">
+                        <div class="notes-ttl">📝 Dispatch Notes</div>
+                        <textarea class="notes-ta" id="noteInput" placeholder="'SAPS notified', 'Unit en route', 'Arrived on scene'…"></textarea>
+                        <button class="act-btn btn-note" onclick="dc.saveNote()">💾 Save Note</button>
                         <div class="notes-log" id="notesLog"></div>
                     </div>
                 </div>
-
-                <div class="action-buttons">
-                    <button class="action-btn btn-maps"    onclick="dispatch.openMaps()">🗺️ View on Maps</button>
-                    <button class="action-btn btn-resolve" id="resolveBtn" onclick="dispatch.resolveAlert()" style="display:none;">✅ Resolve Alert</button>
-                    <button class="action-btn btn-copy"    onclick="dispatch.copyDetails()">📋 Copy Details</button>
+                <div class="act-btns">
+                    <button class="act-btn btn-maps" onclick="dc.openMaps()">🗺️ View on Maps</button>
+                    <button class="act-btn btn-res"  id="resolveBtn" onclick="dc.resolveAlert()" style="display:none;">✅ Resolve Alert</button>
+                    <button class="act-btn btn-copy" onclick="dc.copyDetails()">📋 Copy Details</button>
                 </div>
             </div>
         </div>
 
-        <!-- Right: Analytics (real data only) -->
+        <!-- Right: Analytics -->
         <div class="analytics-panel">
-            <h3 style="font-size:14px; font-weight:900; margin-bottom:16px;">📊 Session Analytics</h3>
+            <h3 style="font-size:14px;font-weight:900;margin-bottom:4px;">📊 Session Analytics</h3>
 
-            <div class="analytics-card">
-                <div class="card-title">Total Incidents</div>
-                <div class="metric-value" id="totalIncidents">0</div>
-                <div class="metric-unit">active + resolved this session</div>
+            <div class="metric-card">
+                <div class="metric-title">Total Incidents</div>
+                <div class="metric-val"  id="totalInc">0</div>
+                <div class="metric-unit">active + resolved</div>
             </div>
-
-            <div class="analytics-card">
-                <div class="card-title">Resolution Rate</div>
-                <div class="metric-value" id="resolutionRate">—</div>
+            <div class="metric-card">
+                <div class="metric-title">Resolution Rate</div>
+                <div class="metric-val"  id="resRate">—</div>
                 <div class="metric-unit">of all alerts resolved</div>
             </div>
-
-            <div class="analytics-card">
-                <div class="card-title">Avg Response Time</div>
-                <div class="metric-value" id="avgResponseTime">—</div>
-                <div class="metric-unit">alert-to-resolve (hh:mm:ss)</div>
+            <div class="metric-card">
+                <div class="metric-title">Avg Response Time</div>
+                <div class="metric-val"  id="avgTime" style="font-size:22px;">—</div>
+                <div class="metric-unit">alert-to-resolve</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title" style="margin-bottom:8px;">🔗 User App</div>
+                <div style="font-size:11px;color:#94a3b8;line-height:1.7;">
+                    <a href="https://tacsecurityservices.github.io/buttot/" target="_blank"
+                       style="color:#f97316;font-weight:bold;">
+                        tacsecurityservices.github.io/buttot
+                    </a><br>
+                    Share with users — works on any device worldwide via Firebase.
+                </div>
             </div>
         </div>
 
     </div>
 </div>
 
-<div class="notification" id="notification"></div>
-<audio id="alertSound" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBT+P1fLIeDEGIXfH8N2RQgsc"></audio>
+<div class="toast" id="toast"></div>
+<audio id="alertSnd" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBT+P1fLIeDEGIXfH8N2RQgsc"></audio>
 
-<script>
-const dispatch = {
-    isLoggedIn:     false,
+<script type="module">
+import { initializeApp }                          from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, onValue, update }      from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+// ── Firebase config ────────────────────────────────────────
+const firebaseConfig = {
+    apiKey:            "AIzaSyAAHkSygnrYJF4axl2Mc-1wsE7erkI5tSc",
+    authDomain:        "punic-button-4428e.firebaseapp.com",
+    databaseURL:       "https://punic-button-4428e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId:         "punic-button-4428e",
+    storageBucket:     "punic-button-4428e.firebasestorage.app",
+    messagingSenderId: "838411218299",
+    appId:             "1:838411218299:web:402c4d5c0385946b3ca1de",
+    measurementId:     "G-LZY15XKQL5"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db          = getDatabase(firebaseApp);
+
+// ── Dispatch controller ────────────────────────────────────
+const dc = window.dc = {
     dispatcherName: '',
-    liveAlerts:     [],
-    resolvedAlerts: [],
-    selectedAlert:  null,
+    isLoggedIn:     false,
+    allAlerts:      {},        // keyed by alertId
+    selectedId:     null,
     filterStatus:   'active',
+    notes:          {},        // alertId → [note, …]  (in-memory, not in Firebase)
+    knownIds:       new Set(),
 
-    init() {
-        this.loadAlertsFromStorage();
-        setInterval(() => this.checkForNewAlerts(), 2000);
-    },
-
-    // ── Auth ──────────────────────────────────────────────────
+    // ── Login ─────────────────────────────────────────────
     handleLogin(e) {
         e.preventDefault();
-        const name = document.getElementById('dispatcherName').value.trim();
-        if (!name) { this.showNotification('❌ Please enter your name', 'error'); return; }
+        const name = document.getElementById('dispName').value.trim();
+        if (!name) { this.toast('❌ Enter your name', 'error'); return; }
         this.dispatcherName = name;
         this.isLoggedIn     = true;
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('dashboard').classList.add('show');
-        document.getElementById('dispatcherTitle').textContent  = name;
-        this.showNotification(`👋 Welcome, ${name}!`, 'success');
-        this.loadAlertsFromStorage();
+        document.getElementById('dispTitle').textContent = name;
+        this.toast(`👋 Welcome, ${name}!`, 'success');
+        this.startListening();
     },
 
-    handleLogout() {
-        this.isLoggedIn     = false;
-        this.dispatcherName = '';
-        this.liveAlerts     = [];
-        this.resolvedAlerts = [];
-        this.selectedAlert  = null;
+    logout() {
+        this.isLoggedIn = false;
         document.getElementById('loginContainer').style.display = 'flex';
         document.getElementById('dashboard').classList.remove('show');
-        document.getElementById('dispatcherName').value = '';
-        document.getElementById('dispatcherName').focus();
+        document.getElementById('dispName').value = '';
     },
 
-    // ── Notifications ─────────────────────────────────────────
-    showNotification(msg, type = 'info') {
-        const el = document.getElementById('notification');
+    // ── Toast ─────────────────────────────────────────────
+    toast(msg, type = 'info') {
+        const el = document.getElementById('toast');
         el.textContent = msg;
-        el.className   = `notification show ${type}`;
+        el.className = `toast show ${type}`;
         setTimeout(() => el.classList.remove('show'), 4000);
     },
 
-    // ── Storage ───────────────────────────────────────────────
-    loadAlertsFromStorage() {
-        const raw = localStorage.getItem('firebase-alerts');
-        if (!raw) return;
-        try {
-            const all           = JSON.parse(raw);
-            this.liveAlerts     = all.filter(a => a.status === 'active');
-            this.resolvedAlerts = all.filter(a => a.status === 'resolved');
-            this.renderAlerts();
-            this.updateStats();
-        } catch (e) { console.error('Parse error:', e); }
-    },
+    // ── Firebase real-time listener ────────────────────────
+    // onValue fires immediately with current data, then again on every change
+    startListening() {
+        // Connection state
+        onValue(ref(db, '.info/connected'), snap => {
+            const online = snap.val();
+            const badge  = document.getElementById('liveBadge');
+            document.getElementById('liveDot').className  = 'live-dot' + (online ? '' : ' off');
+            document.getElementById('liveTxt').textContent = online ? 'FIREBASE LIVE' : 'OFFLINE';
+            badge.className = 'live-badge' + (online ? '' : ' offline');
+        });
 
-    checkForNewAlerts() {
-        if (!this.isLoggedIn) return;
-        const raw = localStorage.getItem('firebase-alerts');
-        if (!raw) return;
-        try {
-            const all       = JSON.parse(raw);
-            const prevCount = this.liveAlerts.length;
-            const newCount  = all.filter(a => a.status === 'active').length;
-            if (newCount > prevCount) {
-                document.getElementById('alertSound').play().catch(() => {});
-                this.showNotification('🚨 New emergency alert received!', 'alert');
+        // All alerts — this single listener covers every create, update, delete
+        onValue(ref(db, 'alerts'), snap => {
+            const raw = snap.val() || {};
+
+            // Detect brand-new active alerts
+            Object.values(raw).forEach(a => {
+                if (a.status === 'active' && !this.knownIds.has(a.alertId)) {
+                    this.knownIds.add(a.alertId);
+                    if (this.isLoggedIn) {
+                        document.getElementById('alertSnd').play().catch(() => {});
+                        this.toast(`🚨 NEW: ${a.userName} ${a.userSurname} — ${a.vehicleReg}`, 'alert');
+                        // Flash new card after render
+                        setTimeout(() => {
+                            const el = document.querySelector(`[data-id="${a.alertId}"]`);
+                            if (el) { el.classList.add('new-in'); setTimeout(() => el.classList.remove('new-in'), 1000); }
+                        }, 150);
+                    }
+                }
+            });
+
+            this.allAlerts = raw;
+
+            // Refresh selected alert's data (live location update)
+            if (this.selectedId && raw[this.selectedId]) {
+                const fresh = raw[this.selectedId];
+                fresh.notes = this.notes[this.selectedId] || [];
+                // Update only the location line in overview without full re-render
+                const locEl = document.getElementById('det-live-loc');
+                if (locEl) {
+                    locEl.textContent = `${fresh.location?.lat?.toFixed(6) ?? '--'}, ${fresh.location?.lng?.toFixed(6) ?? '--'} (±${fresh.location?.accuracy ?? '--'}m)`;
+                }
+                // Update resolve button if status changed
+                document.getElementById('resolveBtn').style.display =
+                    fresh.status === 'active' ? 'flex' : 'none';
             }
-            this.liveAlerts     = all.filter(a => a.status === 'active');
-            this.resolvedAlerts = all.filter(a => a.status === 'resolved');
-            this.renderAlerts();
+
+            this.render();
             this.updateStats();
-        } catch (e) { console.error('Parse error:', e); }
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        });
     },
 
-    // ── Filter ────────────────────────────────────────────────
+    // ── Filter ────────────────────────────────────────────
     setFilter(status, e) {
         this.filterStatus = status;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        if (e?.target) e.target.classList.add('active');
-        this.renderAlerts();
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
+        if (e?.target) e.target.classList.add('on');
+        this.render();
     },
 
-    // ── Render alerts ─────────────────────────────────────────
-    renderAlerts() {
-        const list = document.getElementById('alertsList');
-        const alerts =
-            this.filterStatus === 'active'   ? this.liveAlerts :
-            this.filterStatus === 'resolved' ? this.resolvedAlerts :
-            [...this.liveAlerts, ...this.resolvedAlerts];
+    // ── Render alerts list ────────────────────────────────
+    render() {
+        const list   = document.getElementById('alertsList');
+        const alerts = Object.values(this.allAlerts)
+            .filter(a =>
+                this.filterStatus === 'all'      ? true :
+                this.filterStatus === 'active'   ? a.status === 'active' :
+                                                   a.status === 'resolved')
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         if (!alerts.length) {
             list.innerHTML = `
                 <div class="no-alerts">
-                    <div>📡</div><div>No alerts</div>
-                    <div style="font-size:11px;">Waiting for emergency signals…</div>
+                    <div style="font-size:36px;">📡</div>
+                    <div>No ${this.filterStatus === 'all' ? '' : this.filterStatus} alerts</div>
+                    <div style="font-size:10px;color:#334155;margin-top:6px;">PANIC presses appear here instantly</div>
                 </div>`;
             return;
         }
 
-        list.innerHTML = alerts.map((a, idx) => `
-            <div class="alert-card ${this.selectedAlert?.alertId === a.alertId ? 'active' : ''}"
-                 onclick="dispatch.selectAlert(${idx},'${a.status}')">
-                <div class="alert-vehicle">
-                    <span style="font-size:16px;">🚗</span>
-                    <span class="alert-plate">${a.vehicleReg ?? '--'}</span>
-                    <span class="alert-vehicle-desc">${a.vehicleColor ?? ''} ${a.vehicleMake ?? ''}</span>
+        list.innerHTML = alerts.map(a => {
+            const ago = this.timeAgo(a.timestamp);
+            return `
+            <div class="alert-card ${this.selectedId === a.alertId ? 'sel' : ''}"
+                 data-id="${a.alertId}"
+                 onclick="dc.select('${a.alertId}')">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <span style="font-size:15px;">${a.status === 'active' ? '🚨' : '✅'}</span>
+                    <span class="card-plate">${a.vehicleReg ?? '--'}</span>
+                    <span class="card-desc">${a.vehicleColor ?? ''} ${a.vehicleMake ?? ''}</span>
                 </div>
-                <div class="alert-driver">👤 ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
-                <div class="alert-location">📍 ${a.location?.lat?.toFixed(4) ?? '--'}, ${a.location?.lng?.toFixed(4) ?? '--'}</div>
-            </div>`
-        ).join('');
+                <div class="card-driver">👤 ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
+                <div class="card-loc">📍 ${a.location?.lat?.toFixed(4) ?? '--'}, ${a.location?.lng?.toFixed(4) ?? '--'}</div>
+                <div class="card-meta">🕐 ${ago}${a.battery ? '  🔋 ' + a.battery + '%' : ''}</div>
+            </div>`;
+        }).join('');
     },
 
-    // ── Select alert ──────────────────────────────────────────
-    selectAlert(idx, status) {
-        const pool         = status === 'active' ? this.liveAlerts : this.resolvedAlerts;
-        this.selectedAlert = pool[idx];
-        this.renderAlerts();
+    timeAgo(ts) {
+        if (!ts) return '';
+        const s = Math.floor((Date.now() - new Date(ts)) / 1000);
+        if (s < 60)   return s + 's ago';
+        if (s < 3600) return Math.floor(s / 60) + 'm ago';
+        return Math.floor(s / 3600) + 'h ago';
+    },
+
+    // ── Select alert ──────────────────────────────────────
+    select(alertId) {
+        this.selectedId = alertId;
+        this.render();
         this.renderDetails();
-        document.getElementById('emptyDetails').style.display   = 'none';
-        document.getElementById('detailsContent').style.display = 'flex';
+        document.getElementById('emptyDet').style.display  = 'none';
+        document.getElementById('detContent').style.display = 'flex';
     },
 
-    // ── Tab switching ─────────────────────────────────────────
+    // ── Tab switch ────────────────────────────────────────
     switchTab(name, e) {
-        document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        if (e?.target) e.target.classList.add('active');
-        document.getElementById(`tab-${name}`).classList.add('active');
+        document.querySelectorAll('.det-tab').forEach(t => t.classList.remove('on'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('on'));
+        if (e?.target) e.target.classList.add('on');
+        document.getElementById('tab-' + name).classList.add('on');
     },
 
-    // ── Render details ────────────────────────────────────────
+    // ── Render details ────────────────────────────────────
     renderDetails() {
-        if (!this.selectedAlert) return;
-        const a = this.selectedAlert;
+        const a = this.allAlerts[this.selectedId];
+        if (!a) return;
 
         document.getElementById('tab-overview').innerHTML = `
-            <div style="display:flex;flex-direction:column;gap:12px;">
-                <div class="analytics-card">
-                    <div class="card-title">Vehicle Information</div>
-                    <div style="font-size:13px;color:#cbd5e1;line-height:1.8;">
-                        <div><strong>Plate:</strong> ${a.vehicleReg ?? '--'}</div>
-                        <div><strong>Make:</strong>  ${a.vehicleMake ?? '--'}</div>
-                        <div><strong>Color:</strong> ${a.vehicleColor ?? '--'}</div>
-                    </div>
-                </div>
-                <div class="analytics-card">
-                    <div class="card-title">Driver Information</div>
-                    <div style="font-size:13px;color:#cbd5e1;line-height:1.8;">
-                        <div><strong>Name:</strong>    ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
+            <div style="display:flex;flex-direction:column;gap:10px;padding-top:4px;">
+                ${a.status === 'active' ? `
+                <div class="live-chip">
+                    <span></span> LIVE — location updates in real time via Firebase
+                </div>` : ''}
+
+                <div class="a-card">
+                    <div class="a-card-title">👤 Driver</div>
+                    <div class="a-card-body">
+                        <div><strong>Name:</strong> ${a.userName ?? ''} ${a.userSurname ?? ''}</div>
                         <div><strong>User ID:</strong> ${a.userId ?? '--'}</div>
                     </div>
                 </div>
-                <div class="analytics-card">
-                    <div class="card-title">Location &amp; Status</div>
-                    <div style="font-size:13px;color:#cbd5e1;line-height:1.8;">
-                        <div><strong>Latitude:</strong>  ${a.location?.lat?.toFixed(6) ?? '--'}</div>
-                        <div><strong>Longitude:</strong> ${a.location?.lng?.toFixed(6) ?? '--'}</div>
-                        <div><strong>Accuracy:</strong>  ±${a.location?.accuracy ?? '--'}m</div>
+
+                <div class="a-card">
+                    <div class="a-card-title">🚗 Vehicle</div>
+                    <div class="a-card-body">
+                        <div><strong>Plate:</strong>  ${a.vehicleReg   ?? '--'}</div>
+                        <div><strong>Make:</strong>   ${a.vehicleMake  ?? '--'}</div>
+                        <div><strong>Color:</strong>  ${a.vehicleColor ?? '--'}</div>
+                    </div>
+                </div>
+
+                <div class="a-card">
+                    <div class="a-card-title">📍 Location</div>
+                    <div class="a-card-body">
+                        <div><strong>Coordinates:</strong>
+                            <span id="det-live-loc">
+                                ${a.location?.lat?.toFixed(6) ?? '--'}, ${a.location?.lng?.toFixed(6) ?? '--'} (±${a.location?.accuracy ?? '--'}m)
+                            </span>
+                        </div>
                         <div><strong>Battery:</strong>   ${a.battery ?? '--'}%</div>
                         <div><strong>Alert ID:</strong>  ${a.alertId ?? '--'}</div>
-                        <div><strong>Triggered:</strong> ${a.timestamp  ? new Date(a.timestamp).toLocaleString()  : '--'}</div>
-                        ${a.resolvedAt ? `<div><strong>Resolved:</strong>    ${new Date(a.resolvedAt).toLocaleString()}</div>` : ''}
-                        ${a.resolvedBy ? `<div><strong>Resolved by:</strong> ${a.resolvedBy}</div>` : ''}
+                        <div><strong>Triggered:</strong> ${a.timestamp  ? new Date(a.timestamp).toLocaleString() : '--'}</div>
+                        <div><strong>Last GPS:</strong>  ${a.lastSeen   ? new Date(a.lastSeen).toLocaleString()  : '--'}</div>
+                        ${a.resolvedAt ? `<div><strong>Resolved:</strong> ${new Date(a.resolvedAt).toLocaleString()}</div>` : ''}
+                        ${a.resolvedBy ? `<div><strong>By:</strong> ${a.resolvedBy}</div>` : ''}
                     </div>
                 </div>
             </div>`;
 
-        // Always reset to overview when switching alerts
-        document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelector('.detail-tab').classList.add('active');
-        document.getElementById('tab-overview').classList.add('active');
+        // Reset to overview tab
+        document.querySelectorAll('.det-tab').forEach(t => t.classList.remove('on'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('on'));
+        document.querySelector('.det-tab').classList.add('on');
+        document.getElementById('tab-overview').classList.add('on');
 
-        this.renderNotesLog();
-        document.getElementById('resolveBtn').style.display =
-            a.status === 'active' ? 'flex' : 'none';
+        this.renderNotes();
+        document.getElementById('resolveBtn').style.display = a.status === 'active' ? 'flex' : 'none';
     },
 
-    // ── Dispatch notes ────────────────────────────────────────
-    saveDispatchNote() {
-        const note = document.getElementById('dispatchNotes').value.trim();
-        if (!note) { this.showNotification('❌ Note cannot be empty', 'error'); return; }
-        if (!this.selectedAlert.dispatchNotes) this.selectedAlert.dispatchNotes = [];
-        this.selectedAlert.dispatchNotes.push({
-            timestamp:  new Date().toISOString(),
-            note,
-            dispatcher: this.dispatcherName
+    // ── Notes (stored in memory only) ────────────────────
+    saveNote() {
+        const text = document.getElementById('noteInput').value.trim();
+        if (!text) { this.toast('❌ Note cannot be empty', 'error'); return; }
+        if (!this.notes[this.selectedId]) this.notes[this.selectedId] = [];
+        this.notes[this.selectedId].push({
+            ts:   new Date().toISOString(),
+            text,
+            by:   this.dispatcherName
         });
-        document.getElementById('dispatchNotes').value = '';
-        this.renderNotesLog();
-        this.showNotification('✅ Dispatch note saved', 'success');
+        document.getElementById('noteInput').value = '';
+        this.renderNotes();
+        this.toast('✅ Note saved', 'success');
     },
 
-    renderNotesLog() {
+    renderNotes() {
         const el    = document.getElementById('notesLog');
         if (!el) return;
-        const notes = this.selectedAlert?.dispatchNotes ?? [];
+        const notes = this.notes[this.selectedId] || [];
         el.innerHTML = notes.map(n => `
             <div class="note-entry">
-                <div class="note-time">${new Date(n.timestamp).toLocaleTimeString()} — ${n.dispatcher}</div>
-                <div class="note-text">${n.note}</div>
+                <div class="note-ts">${new Date(n.ts).toLocaleTimeString()} — ${n.by}</div>
+                <div class="note-txt">${n.text}</div>
             </div>`
         ).join('');
     },
 
-    // ── Actions ───────────────────────────────────────────────
+    // ── Actions ───────────────────────────────────────────
     openMaps() {
-        if (!this.selectedAlert) return;
-        const { lat, lng } = this.selectedAlert.location ?? {};
-        if (lat == null || lng == null) { this.showNotification('❌ No location data', 'error'); return; }
+        const a = this.allAlerts[this.selectedId];
+        if (!a) return;
+        const { lat, lng } = a.location ?? {};
+        if (lat == null) { this.toast('❌ No location data', 'error'); return; }
         window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
     },
 
     copyDetails() {
-        if (!this.selectedAlert) return;
-        const a    = this.selectedAlert;
-        const text = `${a.vehicleReg} | ${a.vehicleColor} ${a.vehicleMake} | ${a.location?.lat?.toFixed(4) ?? '--'}, ${a.location?.lng?.toFixed(4) ?? '--'}`;
+        const a = this.allAlerts[this.selectedId];
+        if (!a) return;
+        const text =
+            `SECURELINK ALERT\n` +
+            `Driver:   ${a.userName} ${a.userSurname}\n` +
+            `Vehicle:  ${a.vehicleReg} — ${a.vehicleColor} ${a.vehicleMake}\n` +
+            `Location: ${a.location?.lat?.toFixed(6)}, ${a.location?.lng?.toFixed(6)}\n` +
+            `Maps:     https://www.google.com/maps?q=${a.location?.lat},${a.location?.lng}\n` +
+            `Time:     ${new Date(a.timestamp).toLocaleString()}\n` +
+            `Battery:  ${a.battery ?? '--'}%`;
         navigator.clipboard.writeText(text)
-            .then(()  => this.showNotification('📋 Copied to clipboard', 'success'))
-            .catch(()  => this.showNotification('❌ Failed to copy', 'error'));
+            .then(() => this.toast('📋 Copied!', 'success'))
+            .catch(() => this.toast('❌ Copy failed', 'error'));
     },
 
-    resolveAlert() {
-        if (!this.selectedAlert) return;
-        const id  = this.selectedAlert.alertId;
-        const raw = localStorage.getItem('firebase-alerts');
-        if (!raw) return;
+    async resolveAlert() {
+        const a = this.allAlerts[this.selectedId];
+        if (!a) return;
         try {
-            const all    = JSON.parse(raw);
-            const target = all.find(a => a.alertId === id);
-            if (target) {
-                target.status     = 'resolved';
-                target.resolvedBy = this.dispatcherName;
-                target.resolvedAt = new Date().toISOString();
-                localStorage.setItem('firebase-alerts', JSON.stringify(all));
-                this.loadAlertsFromStorage();
-                this.selectedAlert = null;
-                document.getElementById('emptyDetails').style.display   = 'flex';
-                document.getElementById('detailsContent').style.display = 'none';
-                this.showNotification(`✅ Alert resolved by ${this.dispatcherName}`, 'success');
-            }
-        } catch (e) { console.error('Resolve error:', e); }
+            // Write resolution to Firebase — user app will see status change instantly
+            await update(ref(db, 'alerts/' + a.alertId), {
+                status:     'resolved',
+                resolvedBy: this.dispatcherName,
+                resolvedAt: new Date().toISOString()
+            });
+            this.selectedId = null;
+            document.getElementById('emptyDet').style.display   = 'flex';
+            document.getElementById('detContent').style.display = 'none';
+            this.toast(`✅ Alert resolved by ${this.dispatcherName}`, 'success');
+        } catch(e) {
+            this.toast('❌ Could not resolve — check internet', 'error');
+        }
     },
 
-    // ── Stats – computed from real data only ──────────────────
+    // ── Stats ─────────────────────────────────────────────
     updateStats() {
-        const active   = this.liveAlerts.length;
-        const resolved = this.resolvedAlerts.length;
-        const total    = active + resolved;
+        const all      = Object.values(this.allAlerts);
+        const active   = all.filter(a => a.status === 'active').length;
+        const resolved = all.filter(a => a.status === 'resolved').length;
+        const total    = all.length;
 
-        document.getElementById('activeCount').textContent    = active;
-        document.getElementById('resolvedCount').textContent  = resolved;
-        document.getElementById('totalIncidents').textContent = total;
+        document.getElementById('activeCount').textContent  = active;
+        document.getElementById('resolvedCount').textContent= resolved;
+        document.getElementById('totalInc').textContent     = total;
+        document.getElementById('resRate').textContent      = total > 0 ? Math.round(resolved / total * 100) + '%' : '—';
 
-        document.getElementById('resolutionRate').textContent =
-            total > 0 ? Math.round((resolved / total) * 100) + '%' : '—';
-
-        // Average response time from real resolvedAt – timestamp pairs
-        const times = this.resolvedAlerts
+        const times = all
             .filter(a => a.resolvedAt && a.timestamp)
             .map(a => new Date(a.resolvedAt) - new Date(a.timestamp));
 
         if (times.length) {
-            const avg = times.reduce((s, t) => s + t, 0) / times.length;
+            const avg = times.reduce((s,t) => s+t, 0) / times.length;
             const h   = Math.floor(avg / 3600000);
             const m   = Math.floor((avg % 3600000) / 60000);
-            const s   = Math.floor((avg % 60000) / 1000);
-            document.getElementById('avgResponseTime').textContent =
+            const s   = Math.floor((avg % 60000)   / 1000);
+            document.getElementById('avgTime').textContent =
                 `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
         } else {
-            document.getElementById('avgResponseTime').textContent = '—';
+            document.getElementById('avgTime').textContent = '—';
         }
     }
 };
 
-dispatch.init();
+// expose for inline onclick
+window.dc = dc;
 </script>
 </body>
 </html>
