@@ -181,6 +181,33 @@
         .btn-save-settings { width: 100%; padding: 12px; background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: white; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; margin-top: 6px; transition: all 0.2s; }
         .btn-save-settings:hover { transform: translateY(-1px); box-shadow: 0 8px 16px rgba(168,85,247,0.3); }
 
+        /* ── Audio player ─────────────────────────────────── */
+        .audio-panel { background: linear-gradient(135deg, rgba(220,38,38,0.1), rgba(88,28,135,0.1)); border: 1px solid rgba(220,38,38,0.3); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+        .audio-panel-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+        .audio-panel-title { font-size:12px; font-weight:900; color:#fca5a5; display:flex; align-items:center; gap:6px; }
+        .audio-live-badge { font-size:9px; background:rgba(220,38,38,0.2); border:1px solid rgba(220,38,38,0.4); color:#fca5a5; padding:2px 8px; border-radius:10px; font-weight:bold; animation: blink 1s infinite; }
+        .audio-chunks { display:flex; flex-direction:column; gap:6px; max-height:200px; overflow-y:auto; margin-bottom:10px; }
+        .audio-chunk-item { background-color:#0f172a; border:1px solid #1e293b; border-radius:8px; padding:8px 10px; display:flex; align-items:center; gap:8px; }
+        .chunk-num { font-size:9px; color:#64748b; font-family:monospace; width:30px; flex-shrink:0; }
+        .chunk-audio { flex:1; height:28px; }
+        .chunk-audio::-webkit-media-controls-panel { background-color:#1e293b; }
+        .chunk-ts { font-size:9px; color:#475569; white-space:nowrap; }
+        .audio-empty { font-size:10px; color:#334155; text-align:center; padding:16px; }
+        .audio-waveform { display:flex; align-items:center; gap:2px; height:18px; margin-bottom:8px; }
+        .audio-wave-bar { width:3px; background:#ef4444; border-radius:2px; }
+        .audio-wave-bar.active { animation: wave 0.5s ease-in-out infinite alternate; }
+        .audio-wave-bar:nth-child(1){height:4px;animation-delay:0s;}
+        .audio-wave-bar:nth-child(2){height:12px;animation-delay:0.1s;}
+        .audio-wave-bar:nth-child(3){height:18px;animation-delay:0.2s;}
+        .audio-wave-bar:nth-child(4){height:8px;animation-delay:0.3s;}
+        .audio-wave-bar:nth-child(5){height:14px;animation-delay:0.4s;}
+        .audio-wave-bar:nth-child(6){height:6px;animation-delay:0.05s;}
+        .audio-wave-bar:nth-child(7){height:16px;animation-delay:0.25s;}
+        @keyframes wave { to{height:3px;opacity:0.3;} }
+        .btn-dl-audio { width:100%; padding:8px; background:rgba(220,38,38,0.2); border:1px solid rgba(220,38,38,0.3); color:#fca5a5; border-radius:8px; cursor:pointer; font-size:11px; font-weight:bold; transition:all 0.2s; }
+        .btn-dl-audio:hover { background:rgba(220,38,38,0.35); }
+        .btn-dl-audio:disabled { opacity:0.3; cursor:not-allowed; }
+
         /* Scrollbars */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
@@ -323,6 +350,7 @@
                 <div class="det-tabs">
                     <button class="det-tab on"         onclick="dc.switchTab('overview', event)">📋 Overview</button>
                     <button class="det-tab retell-tab" onclick="dc.switchTab('retell',   event)">🤖 Retell Agent</button>
+                    <button class="det-tab"            onclick="dc.switchTab('audio',    event)" id="audioTab">🎙️ Audio</button>
                     <button class="det-tab"            onclick="dc.switchTab('notes',    event)">📝 Log</button>
                 </div>
 
@@ -346,6 +374,30 @@
                     <div class="call-log-box">
                         <div class="call-log-ttl">📞 Call Log</div>
                         <div id="callLog"><div style="font-size:10px;color:#334155;">No calls yet for this alert</div></div>
+                    </div>
+                </div>
+
+                <div id="tab-audio" class="tab-pane">
+                    <div class="audio-panel">
+                        <div class="audio-panel-hdr">
+                            <div class="audio-panel-title">
+                                🎙️ Live Audio Stream
+                                <span class="audio-live-badge" id="audioLiveBadge" style="display:none;">● LIVE</span>
+                            </div>
+                            <span id="audioChunkCount" style="font-size:10px;color:#64748b;">0 chunks</span>
+                        </div>
+                        <div class="audio-waveform" id="audioWaveform">
+                            <div class="audio-wave-bar"></div><div class="audio-wave-bar"></div>
+                            <div class="audio-wave-bar"></div><div class="audio-wave-bar"></div>
+                            <div class="audio-wave-bar"></div><div class="audio-wave-bar"></div>
+                            <div class="audio-wave-bar"></div>
+                        </div>
+                        <div class="audio-chunks" id="audioChunks">
+                            <div class="audio-empty">Waiting for audio from user's device…</div>
+                        </div>
+                        <button class="btn-dl-audio" id="dlAudioBtn" onclick="dc.downloadRecording()" disabled>
+                            ⬇️ Download Full Recording (.mp3)
+                        </button>
                     </div>
                 </div>
 
@@ -439,7 +491,7 @@
 
 <script type="module">
 import { initializeApp }                     from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, onValue, update, onChildAdded } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey:            "AIzaSyAAHkSygnrYJF4axl2Mc-1wsE7erkI5tSc",
@@ -465,7 +517,9 @@ const dc = window.dc = {
     callLogs:       {},
     knownIds:       new Set(),
     totalCallsMade: 0,
-
+    // ── Audio ─────────────────────────────────────────────
+    audioChunks:    {},    // alertId → [{key, data, mimeType, ts}]
+    audioListeners: {},    // alertId → unsubscribe fn
     cfg: { webhookUrl:'https://hook.eu1.make.com/phdt5uufktqhv7w2cxn2auwps964wkvv', sapsNum:'', armedNum:'', medNum:'', familyNum:'', autoCall: false },
 
     // ── Login ─────────────────────────────────────────────
@@ -546,6 +600,8 @@ const dc = window.dc = {
                             const el = document.querySelector(`[data-id="${a.alertId}"]`);
                             if (el) { el.classList.add('new-in'); setTimeout(() => el.classList.remove('new-in'), 900); }
                         }, 120);
+                        // Pre-start audio listener so we don't miss early chunks
+                        this.startAudioListener(a.alertId);
                     }
                 }
             });
@@ -620,6 +676,7 @@ const dc = window.dc = {
         this.render();
         this.renderDetails();
         this.updatePhoneDisplay();
+        this.startAudioListener(id);   // begin listening for audio chunks
         document.getElementById('emptyDet').style.display   = 'none';
         document.getElementById('detContent').style.display = 'flex';
     },
@@ -631,6 +688,119 @@ const dc = window.dc = {
         if (e?.target) e.target.classList.add('on');
         document.getElementById('tab-' + name).classList.add('on');
         if (name === 'retell') this.renderRetell();
+        if (name === 'audio')  this.renderAudioPanel();
+    },
+
+    // ── Audio listener ────────────────────────────────────
+    startAudioListener(alertId) {
+        if (this.audioListeners[alertId]) return; // already listening
+        if (!this.audioChunks[alertId]) this.audioChunks[alertId] = [];
+
+        const unsubscribe = onChildAdded(ref(db, `alerts/${alertId}/audio`), snap => {
+            const chunk = { key: snap.key, ...snap.val() };
+            // Avoid duplicates
+            if (!this.audioChunks[alertId].find(c => c.key === chunk.key)) {
+                this.audioChunks[alertId].push(chunk);
+                this.audioChunks[alertId].sort((a, b) => a.key.localeCompare(b.key));
+
+                // Show live badge if alert is active
+                const a = this.allAlerts[alertId];
+                if (a?.status === 'active') {
+                    const badge = document.getElementById('audioLiveBadge');
+                    if (badge) badge.style.display = 'inline-flex';
+                    // Animate waveform
+                    document.querySelectorAll('.audio-wave-bar').forEach(b => b.classList.add('active'));
+                    setTimeout(() => {
+                        document.querySelectorAll('.audio-wave-bar').forEach(b => b.classList.remove('active'));
+                    }, 5000);
+                }
+
+                // Re-render audio panel if currently open
+                if (this.selectedId === alertId) {
+                    const tab = document.getElementById('tab-audio');
+                    if (tab?.classList.contains('on')) this.renderAudioPanel();
+                    // Update chunk count badge even if not on audio tab
+                    const el = document.getElementById('audioChunkCount');
+                    if (el) el.textContent = `${this.audioChunks[alertId].length} chunk${this.audioChunks[alertId].length !== 1 ? 's' : ''}`;
+                    // Flash the audio tab
+                    const audioTabBtn = document.getElementById('audioTab');
+                    if (audioTabBtn) {
+                        audioTabBtn.style.color = '#ef4444';
+                        setTimeout(() => { audioTabBtn.style.color = ''; }, 2000);
+                    }
+                }
+            }
+        });
+        this.audioListeners[alertId] = unsubscribe;
+    },
+
+    renderAudioPanel() {
+        const chunks  = this.audioChunks[this.selectedId] || [];
+        const alert   = this.allAlerts[this.selectedId];
+        const isLive  = alert?.status === 'active';
+
+        // Live badge
+        const badge = document.getElementById('audioLiveBadge');
+        if (badge) badge.style.display = (isLive && chunks.length > 0) ? 'inline-flex' : 'none';
+
+        // Chunk count
+        const countEl = document.getElementById('audioChunkCount');
+        if (countEl) countEl.textContent = `${chunks.length} chunk${chunks.length !== 1 ? 's' : ''}`;
+
+        // Download button
+        const dlBtn = document.getElementById('dlAudioBtn');
+        if (dlBtn) dlBtn.disabled = chunks.length === 0;
+
+        const container = document.getElementById('audioChunks');
+        if (!container) return;
+
+        if (chunks.length === 0) {
+            container.innerHTML = `<div class="audio-empty">${isLive ? '⏳ Waiting for audio — mic may be denied on user device' : 'No audio recorded for this alert'}</div>`;
+            return;
+        }
+
+        container.innerHTML = chunks.map((c, i) => {
+            const mimeType = c.mimeType || 'audio/mpeg';
+            const src  = `data:${mimeType};base64,${c.data}`;
+            const ts   = c.ts ? new Date(c.ts).toLocaleTimeString() : '';
+            return `
+            <div class="audio-chunk-item">
+                <span class="chunk-num">#${String(i+1).padStart(2,'0')}</span>
+                <audio class="chunk-audio" controls preload="none">
+                    <source src="${src}" type="${mimeType}">
+                </audio>
+                <span class="chunk-ts">${ts}</span>
+            </div>`;
+        }).join('');
+    },
+
+    // ── Download full recording ───────────────────────────
+    async downloadRecording() {
+        const chunks = this.audioChunks[this.selectedId];
+        if (!chunks || chunks.length === 0) return;
+        const a = this.allAlerts[this.selectedId];
+
+        // Merge all base64 MP3 chunks into one binary blob
+        const byteArrays = chunks.map(c => {
+            const binary = atob(c.data);
+            const bytes  = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            return bytes;
+        });
+
+        const totalLen = byteArrays.reduce((sum, b) => sum + b.length, 0);
+        const combined = new Uint8Array(totalLen);
+        let   offset   = 0;
+        for (const b of byteArrays) { combined.set(b, offset); offset += b.length; }
+
+        const blob = new Blob([combined], { type: 'audio/mpeg' });
+        const url  = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href     = url;
+        link.download = `securelink-${a?.vehicleReg ?? 'alert'}-${new Date().toISOString().slice(0,10)}.mp3`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        this.toast('⬇️ MP3 recording downloaded', 'success');
     },
 
     // ── Overview ──────────────────────────────────────────
@@ -667,6 +837,7 @@ const dc = window.dc = {
         document.getElementById('tab-overview').classList.add('on');
         this.renderNotes();
         this.renderRetell();
+        this.renderAudioPanel();
         document.getElementById('resolveBtn').style.display = a.status === 'active' ? 'flex' : 'none';
     },
 
