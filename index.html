@@ -68,10 +68,41 @@
         .filter-btn { padding: 5px 9px; background-color: #1e293b; color: #cbd5e1; border: 1px solid #334155; border-radius: 7px; cursor: pointer; font-weight: bold; font-size: 10px; transition: all 0.2s; }
         .filter-btn.on { background-color: #3b82f6; border-color: #3b82f6; color: white; }
         .alerts-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; }
-        .alert-card { background-color: #1e293b; border: 2px solid #334155; border-radius: 12px; padding: 11px; cursor: pointer; transition: all 0.2s; }
+        .alert-card { background-color: #1e293b; border: 2px solid #334155; border-radius: 12px; padding: 11px; cursor: pointer; transition: all 0.2s; position: relative; }
         .alert-card:hover { background-color: #334155; border-color: #475569; }
         .alert-card.sel   { background-color: #1e3a5f; border-color: #3b82f6; }
         .alert-card.new-in { animation: newFlash 0.8s ease-out; }
+        .alert-card.chk-sel { border-color: #ef4444 !important; background-color: rgba(220,38,38,0.12) !important; }
+
+        /* Checkbox overlay on cards in delete mode */
+        .card-checkbox {
+            position: absolute; top: 10px; right: 10px;
+            width: 20px; height: 20px; border-radius: 50%;
+            border: 2px solid #475569; background: #0f172a;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; transition: all 0.15s; flex-shrink: 0;
+        }
+        .chk-sel .card-checkbox { background: #ef4444; border-color: #ef4444; }
+
+        /* Delete action bar */
+        .delete-bar {
+            display: none; position: sticky; bottom: 0;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-top: 1px solid rgba(220,38,38,0.4);
+            padding: 10px 12px; gap: 8px; align-items: center;
+            margin: 8px -14px -14px; border-radius: 0 0 0 0;
+        }
+        .delete-bar.show { display: flex; }
+        .delete-bar-count { font-size: 11px; color: #94a3b8; flex: 1; }
+        .delete-bar-count strong { color: #fca5a5; }
+        .btn-cancel-del { padding: 7px 12px; background: #1e293b; border: 1px solid #334155; color: #94a3b8; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .btn-confirm-del { padding: 7px 14px; background: rgba(220,38,38,0.2); border: 1px solid rgba(220,38,38,0.5); color: #fca5a5; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; transition: all 0.2s; }
+        .btn-confirm-del:hover { background: rgba(220,38,38,0.4); }
+        .btn-confirm-del:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Select mode toggle button */
+        .btn-select-mode { padding: 5px 9px; background-color: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 7px; cursor: pointer; font-weight: bold; font-size: 10px; transition: all 0.2s; margin-left: auto; }
+        .btn-select-mode.active { background: rgba(220,38,38,0.15); border-color: rgba(220,38,38,0.4); color: #fca5a5; }
         @keyframes newFlash { 0%{border-color:#ef4444;box-shadow:0 0 20px rgba(239,68,68,0.6);}100%{border-color:#334155;box-shadow:none;} }
         .card-row   { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
         .card-plate { font-weight: 900; font-size: 13px; letter-spacing: 1px; }
@@ -208,6 +239,19 @@
         .btn-dl-audio:hover { background:rgba(220,38,38,0.35); }
         .btn-dl-audio:disabled { opacity:0.3; cursor:not-allowed; }
 
+        .listen-live-btn { width:100%; padding:10px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:bold; transition:all 0.2s; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:8px; border:2px solid rgba(220,38,38,0.4); background:rgba(220,38,38,0.1); color:#fca5a5; }
+        .listen-live-btn.active { background:rgba(220,38,38,0.3); border-color:#ef4444; color:#fff; animation: listenPulse 2s ease-in-out infinite; }
+        @keyframes listenPulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4);} 50%{box-shadow:0 0 0 8px rgba(239,68,68,0);} }
+        .live-eq { display:flex; align-items:center; gap:2px; height:14px; }
+        .live-eq span { width:3px; background:#ef4444; border-radius:1px; display:inline-block; }
+        .live-eq span:nth-child(1){height:4px; animation:eq 0.5s 0.0s ease-in-out infinite alternate;}
+        .live-eq span:nth-child(2){height:10px;animation:eq 0.5s 0.1s ease-in-out infinite alternate;}
+        .live-eq span:nth-child(3){height:14px;animation:eq 0.5s 0.2s ease-in-out infinite alternate;}
+        .live-eq span:nth-child(4){height:8px; animation:eq 0.5s 0.3s ease-in-out infinite alternate;}
+        .live-eq span:nth-child(5){height:12px;animation:eq 0.5s 0.15s ease-in-out infinite alternate;}
+        @keyframes eq { to{height:2px;} }
+        #liveAudioEl { display:none; }
+
         /* Scrollbars */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
@@ -328,6 +372,7 @@
                 <button class="filter-btn on" onclick="dc.setFilter('active',   event)">🔴 Active</button>
                 <button class="filter-btn"    onclick="dc.setFilter('resolved', event)">✅ Done</button>
                 <button class="filter-btn"    onclick="dc.setFilter('all',      event)">📋 All</button>
+                <button class="btn-select-mode" id="selectModeBtn" onclick="dc.toggleDeleteMode()">☑️ Select</button>
             </div>
             <div class="alerts-list" id="alertsList">
                 <div class="no-alerts">
@@ -335,6 +380,12 @@
                     <div>Listening for alerts…</div>
                     <div style="font-size:10px;color:#334155;margin-top:4px;">PANIC presses appear instantly</div>
                 </div>
+            </div>
+            <!-- Delete action bar — appears when items are selected -->
+            <div class="delete-bar" id="deleteBar">
+                <div class="delete-bar-count" id="deleteBarCount">0 selected</div>
+                <button class="btn-cancel-del"  onclick="dc.toggleDeleteMode()">Cancel</button>
+                <button class="btn-confirm-del" id="deleteConfirmBtn" onclick="dc.deleteSelected()" disabled>🗑️ Delete</button>
             </div>
         </div>
 
@@ -386,12 +437,27 @@
                             </div>
                             <span id="audioChunkCount" style="font-size:10px;color:#64748b;">0 chunks</span>
                         </div>
+
+                        <!-- Live listen button -->
+                        <button class="listen-live-btn" id="listenLiveBtn" onclick="dc.toggleLiveListen()" disabled>
+                            <span id="listenLiveBtnIcon">🎧</span>
+                            <span id="listenLiveBtnTxt">Listen Live</span>
+                            <div class="live-eq" id="listenEq" style="display:none;">
+                                <span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                        </button>
+
+                        <!-- Hidden audio element for live autoplay -->
+                        <audio id="liveAudioEl" autoplay></audio>
+
                         <div class="audio-waveform" id="audioWaveform">
                             <div class="audio-wave-bar"></div><div class="audio-wave-bar"></div>
                             <div class="audio-wave-bar"></div><div class="audio-wave-bar"></div>
                             <div class="audio-wave-bar"></div><div class="audio-wave-bar"></div>
                             <div class="audio-wave-bar"></div>
                         </div>
+
+                        <div style="font-size:10px;color:#64748b;margin-bottom:8px;">📼 Recorded chunks — click any to play</div>
                         <div class="audio-chunks" id="audioChunks">
                             <div class="audio-empty">Waiting for audio from user's device…</div>
                         </div>
@@ -491,7 +557,7 @@
 
 <script type="module">
 import { initializeApp }                     from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getDatabase, ref, onValue, update, onChildAdded } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+import { getDatabase, ref, onValue, update, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey:            "AIzaSyAAHkSygnrYJF4axl2Mc-1wsE7erkI5tSc",
@@ -518,8 +584,14 @@ const dc = window.dc = {
     knownIds:       new Set(),
     totalCallsMade: 0,
     // ── Audio ─────────────────────────────────────────────
-    audioChunks:    {},    // alertId → [{key, data, mimeType, ts}]
-    audioListeners: {},    // alertId → unsubscribe fn
+    audioChunks:          {},
+    audioListeners:       {},
+    listenLive:           false,
+    lastPlayedKey:        null,
+    _lastRenderedAlertId: null,
+    // ── Delete mode ───────────────────────────────────────
+    deleteMode:          false,
+    selectedForDelete:   new Set(),
     cfg: { webhookUrl:'https://hook.eu1.make.com/phdt5uufktqhv7w2cxn2auwps964wkvv', sapsNum:'', armedNum:'', medNum:'', familyNum:'', autoCall: false },
 
     // ── Login ─────────────────────────────────────────────
@@ -642,13 +714,24 @@ const dc = window.dc = {
             return;
         }
 
+        const inDeleteMode = this.deleteMode;
+
         list.innerHTML = alerts.map(a => {
             const logs    = this.callLogs[a.alertId] || [];
             const last    = logs[logs.length - 1];
             const pill    = last ? `<span class="call-pill ${last.status}">📞 ${last.service}</span>` : '';
             const ago     = this.timeAgo(a.timestamp);
+            const isChkSel = inDeleteMode && this.selectedForDelete.has(a.alertId);
+            const clickFn  = inDeleteMode
+                ? `dc.toggleCardSelect('${a.alertId}')`
+                : `dc.select('${a.alertId}')`;
+            const selClass = inDeleteMode
+                ? (isChkSel ? 'chk-sel' : '')
+                : (this.selectedId === a.alertId ? 'sel' : '');
+
             return `
-            <div class="alert-card ${this.selectedId === a.alertId ? 'sel' : ''}" data-id="${a.alertId}" onclick="dc.select('${a.alertId}')">
+            <div class="alert-card ${selClass}" data-id="${a.alertId}" onclick="${clickFn}">
+                ${inDeleteMode ? `<div class="card-checkbox">${isChkSel ? '✓' : ''}</div>` : ''}
                 <div class="card-row">
                     <span style="font-size:13px;">${a.status === 'active' ? '🚨' : '✅'}</span>
                     <span class="card-plate">${a.vehicleReg ?? '--'}</span>
@@ -670,13 +753,122 @@ const dc = window.dc = {
         return Math.floor(s / 3600) + 'h ago';
     },
 
+    // ── Delete mode ───────────────────────────────────────
+    toggleDeleteMode() {
+        this.deleteMode = !this.deleteMode;
+        this.selectedForDelete.clear();
+
+        const btn = document.getElementById('selectModeBtn');
+        const bar = document.getElementById('deleteBar');
+
+        if (this.deleteMode) {
+            btn.classList.add('active');
+            btn.textContent = '✕ Cancel';
+            bar.classList.add('show');
+            // Hide detail panel while selecting
+            document.getElementById('emptyDet').style.display   = 'block';
+            document.getElementById('detContent').style.display = 'none';
+        } else {
+            btn.classList.remove('active');
+            btn.textContent = '☑️ Select';
+            bar.classList.remove('show');
+        }
+        this.updateDeleteBar();
+        this.render();
+    },
+
+    toggleCardSelect(alertId) {
+        if (!this.deleteMode) return;
+        if (this.selectedForDelete.has(alertId)) {
+            this.selectedForDelete.delete(alertId);
+        } else {
+            this.selectedForDelete.add(alertId);
+        }
+        this.updateDeleteBar();
+        this.render();
+    },
+
+    updateDeleteBar() {
+        const count   = this.selectedForDelete.size;
+        const countEl = document.getElementById('deleteBarCount');
+        const delBtn  = document.getElementById('deleteConfirmBtn');
+        if (countEl) countEl.innerHTML = count === 0
+            ? 'Tap alerts to select'
+            : `<strong>${count}</strong> alert${count !== 1 ? 's' : ''} selected`;
+        if (delBtn) delBtn.disabled = count === 0;
+    },
+
+    async deleteSelected() {
+        const ids    = [...this.selectedForDelete];
+        const count  = ids.length;
+        if (!count) return;
+
+        const hasActive = ids.some(id => this.allAlerts[id]?.status === 'active');
+        const confirmMsg = hasActive
+            ? `Delete ${count} alert${count !== 1 ? 's' : ''}? ⚠️ This includes active alert(s).`
+            : `Delete ${count} alert${count !== 1 ? 's' : ''}? This cannot be undone.`;
+
+        if (!confirm(confirmMsg)) return;
+
+        const delBtn = document.getElementById('deleteConfirmBtn');
+        if (delBtn) { delBtn.disabled = true; delBtn.textContent = '⏳ Deleting…'; }
+
+        // Delete each alert from Firebase
+        const results = await Promise.allSettled(
+            ids.map(id => remove(ref(db, 'alerts/' + id)))
+        );
+
+        const failed = results.filter(r => r.status === 'rejected').length;
+
+        // Clean up local state for deleted alerts
+        ids.forEach(id => {
+            delete this.allAlerts[id];
+            delete this.callLogs[id];
+            delete this.audioChunks[id];
+            if (this.audioListeners[id]) {
+                this.audioListeners[id]();
+                delete this.audioListeners[id];
+            }
+            if (this.selectedId === id) {
+                this.selectedId = null;
+                document.getElementById('emptyDet').style.display   = 'block';
+                document.getElementById('detContent').style.display = 'none';
+            }
+        });
+
+        this.selectedForDelete.clear();
+        this.deleteMode = false;
+        document.getElementById('selectModeBtn').classList.remove('active');
+        document.getElementById('selectModeBtn').textContent = '☑️ Select';
+        document.getElementById('deleteBar').classList.remove('show');
+
+        this.render();
+        this.updateStats();
+
+        if (failed > 0) {
+            this.toast(`⚠️ ${count - failed} deleted, ${failed} failed`, 'warning');
+        } else {
+            this.toast(`🗑️ ${count} alert${count !== 1 ? 's' : ''} deleted`, 'success');
+        }
+    },
+
     // ── Select ────────────────────────────────────────────
     select(id) {
+        // If switching alerts, stop live listen and reset audio panel
+        if (this.selectedId !== id) {
+            if (this.listenLive) {
+                this.listenLive = false;
+                this.lastPlayedKey = null;
+                const liveEl = document.getElementById('liveAudioEl');
+                if (liveEl) { liveEl.pause(); liveEl.src = ''; }
+            }
+            this._lastRenderedAlertId = null; // force panel to clear for new alert
+        }
         this.selectedId = id;
         this.render();
         this.renderDetails();
         this.updatePhoneDisplay();
-        this.startAudioListener(id);   // begin listening for audio chunks
+        this.startAudioListener(id);
         document.getElementById('emptyDet').style.display   = 'none';
         document.getElementById('detContent').style.display = 'flex';
     },
@@ -693,45 +885,97 @@ const dc = window.dc = {
 
     // ── Audio listener ────────────────────────────────────
     startAudioListener(alertId) {
-        if (this.audioListeners[alertId]) return; // already listening
+        if (this.audioListeners[alertId]) return;
         if (!this.audioChunks[alertId]) this.audioChunks[alertId] = [];
 
         const unsubscribe = onChildAdded(ref(db, `alerts/${alertId}/audio`), snap => {
             const chunk = { key: snap.key, ...snap.val() };
-            // Avoid duplicates
-            if (!this.audioChunks[alertId].find(c => c.key === chunk.key)) {
-                this.audioChunks[alertId].push(chunk);
-                this.audioChunks[alertId].sort((a, b) => a.key.localeCompare(b.key));
+            if (this.audioChunks[alertId].find(c => c.key === chunk.key)) return;
 
-                // Show live badge if alert is active
-                const a = this.allAlerts[alertId];
-                if (a?.status === 'active') {
-                    const badge = document.getElementById('audioLiveBadge');
-                    if (badge) badge.style.display = 'inline-flex';
-                    // Animate waveform
-                    document.querySelectorAll('.audio-wave-bar').forEach(b => b.classList.add('active'));
-                    setTimeout(() => {
-                        document.querySelectorAll('.audio-wave-bar').forEach(b => b.classList.remove('active'));
-                    }, 5000);
-                }
+            this.audioChunks[alertId].push(chunk);
+            this.audioChunks[alertId].sort((a, b) => a.key.localeCompare(b.key));
 
-                // Re-render audio panel if currently open
-                if (this.selectedId === alertId) {
-                    const tab = document.getElementById('tab-audio');
-                    if (tab?.classList.contains('on')) this.renderAudioPanel();
-                    // Update chunk count badge even if not on audio tab
-                    const el = document.getElementById('audioChunkCount');
-                    if (el) el.textContent = `${this.audioChunks[alertId].length} chunk${this.audioChunks[alertId].length !== 1 ? 's' : ''}`;
-                    // Flash the audio tab
-                    const audioTabBtn = document.getElementById('audioTab');
-                    if (audioTabBtn) {
-                        audioTabBtn.style.color = '#ef4444';
-                        setTimeout(() => { audioTabBtn.style.color = ''; }, 2000);
-                    }
+            // Animate waveform bars
+            const a = this.allAlerts[alertId];
+            if (a?.status === 'active') {
+                const badge = document.getElementById('audioLiveBadge');
+                if (badge) badge.style.display = 'inline-flex';
+                document.querySelectorAll('.audio-wave-bar').forEach(b => b.classList.add('active'));
+                setTimeout(() => document.querySelectorAll('.audio-wave-bar').forEach(b => b.classList.remove('active')), 5000);
+            }
+
+            // ── Live autoplay ──────────────────────────────
+            if (this.listenLive && this.selectedId === alertId && chunk.key !== this.lastPlayedKey) {
+                this._playChunkLive(chunk);
+            }
+
+            // Update UI if audio tab is open
+            if (this.selectedId === alertId) {
+                const tab = document.getElementById('tab-audio');
+                if (tab?.classList.contains('on')) this.renderAudioPanel();
+
+                const countEl = document.getElementById('audioChunkCount');
+                if (countEl) countEl.textContent = `${this.audioChunks[alertId].length} chunk${this.audioChunks[alertId].length !== 1 ? 's' : ''}`;
+
+                // Flash audio tab button
+                const audioTabBtn = document.getElementById('audioTab');
+                if (audioTabBtn) {
+                    audioTabBtn.style.color = '#ef4444';
+                    setTimeout(() => { audioTabBtn.style.color = ''; }, 2000);
                 }
             }
         });
         this.audioListeners[alertId] = unsubscribe;
+    },
+
+    // ── Play a single chunk through the live audio element ─
+    _playChunkLive(chunk) {
+        this.lastPlayedKey = chunk.key;
+        const el = document.getElementById('liveAudioEl');
+        if (!el) return;
+        const mimeType = chunk.mimeType || 'audio/mpeg';
+        el.src = `data:${mimeType};base64,${chunk.data}`;
+        el.load();
+        el.play().catch(() => {
+            // Autoplay blocked — show toast
+            this.toast('⚠️ Click "Listen Live" again to enable audio', 'warning');
+        });
+    },
+
+    // ── Toggle live listen mode ────────────────────────────
+    toggleLiveListen() {
+        const alert = this.allAlerts[this.selectedId];
+        if (!alert) return;
+
+        this.listenLive = !this.listenLive;
+
+        const btn     = document.getElementById('listenLiveBtn');
+        const btnTxt  = document.getElementById('listenLiveBtnTxt');
+        const btnIcon = document.getElementById('listenLiveBtnIcon');
+        const eq      = document.getElementById('listenEq');
+        const liveEl  = document.getElementById('liveAudioEl');
+
+        if (this.listenLive) {
+            btn.classList.add('active');
+            btnTxt.textContent  = 'Listening Live…';
+            btnIcon.textContent = '🔴';
+            if (eq) eq.style.display = 'flex';
+            this.toast('🎧 Live listen enabled — audio plays as it arrives', 'success');
+
+            // Immediately play the most recent chunk if available
+            const chunks = this.audioChunks[this.selectedId] || [];
+            if (chunks.length > 0) {
+                const latest = chunks[chunks.length - 1];
+                if (latest.key !== this.lastPlayedKey) this._playChunkLive(latest);
+            }
+        } else {
+            btn.classList.remove('active');
+            btnTxt.textContent  = 'Listen Live';
+            btnIcon.textContent = '🎧';
+            if (eq) eq.style.display = 'none';
+            if (liveEl) { liveEl.pause(); liveEl.src = ''; }
+            this.toast('🎧 Live listen stopped', 'info');
+        }
     },
 
     renderAudioPanel() {
@@ -747,6 +991,26 @@ const dc = window.dc = {
         const countEl = document.getElementById('audioChunkCount');
         if (countEl) countEl.textContent = `${chunks.length} chunk${chunks.length !== 1 ? 's' : ''}`;
 
+        // Listen Live button — only enabled for active alerts that have audio
+        const listenBtn = document.getElementById('listenLiveBtn');
+        if (listenBtn) {
+            listenBtn.disabled = !isLive;
+            if (!isLive && this.listenLive) {
+                // Alert ended — stop live listen automatically
+                this.listenLive = false;
+                listenBtn.classList.remove('active');
+                const liveEl = document.getElementById('liveAudioEl');
+                if (liveEl) { liveEl.pause(); liveEl.src = ''; }
+                document.getElementById('listenLiveBtnTxt').textContent  = 'Listen Live';
+                document.getElementById('listenLiveBtnIcon').textContent = '🎧';
+                const eq = document.getElementById('listenEq');
+                if (eq) eq.style.display = 'none';
+            }
+            // Show helpful text when alert is resolved
+            const btnTxt = document.getElementById('listenLiveBtnTxt');
+            if (btnTxt && !isLive && !this.listenLive) btnTxt.textContent = 'Alert Resolved';
+        }
+
         // Download button
         const dlBtn = document.getElementById('dlAudioBtn');
         if (dlBtn) dlBtn.disabled = chunks.length === 0;
@@ -759,19 +1023,40 @@ const dc = window.dc = {
             return;
         }
 
-        container.innerHTML = chunks.map((c, i) => {
+        // ── Clear container only when switching to a different alert ──
+        if (this._lastRenderedAlertId !== this.selectedId) {
+            container.innerHTML = '';
+            this._lastRenderedAlertId = this.selectedId;
+        }
+
+        // ── Incremental append — only add new chunks, never destroy existing audio players ──
+        const existingKeys = new Set(
+            [...container.querySelectorAll('[data-chunk-key]')].map(el => el.dataset.chunkKey)
+        );
+
+        // Remove empty placeholder if present
+        const placeholder = container.querySelector('.audio-empty');
+        if (placeholder) placeholder.remove();
+
+        chunks.forEach((c, i) => {
+            if (existingKeys.has(c.key)) return; // already rendered — skip to preserve playback state
             const mimeType = c.mimeType || 'audio/mpeg';
-            const src  = `data:${mimeType};base64,${c.data}`;
-            const ts   = c.ts ? new Date(c.ts).toLocaleTimeString() : '';
-            return `
-            <div class="audio-chunk-item">
-                <span class="chunk-num">#${String(i+1).padStart(2,'0')}</span>
+            const src      = `data:${mimeType};base64,${c.data}`;
+            const ts       = c.ts ? new Date(c.ts).toLocaleTimeString() : '';
+            const div      = document.createElement('div');
+            div.className        = 'audio-chunk-item';
+            div.dataset.chunkKey = c.key;
+            div.innerHTML = `
+                <span class="chunk-num">#${String(i + 1).padStart(2, '0')}</span>
                 <audio class="chunk-audio" controls preload="none">
                     <source src="${src}" type="${mimeType}">
                 </audio>
-                <span class="chunk-ts">${ts}</span>
-            </div>`;
-        }).join('');
+                <span class="chunk-ts">${ts}</span>`;
+            container.appendChild(div);
+        });
+
+        // Scroll to newest chunk without disrupting playing audio
+        container.scrollTop = container.scrollHeight;
     },
 
     // ── Download full recording ───────────────────────────
