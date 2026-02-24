@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecureLink Dispatch - Control Center</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; height: 100vh; overflow: hidden; }
@@ -264,6 +265,62 @@
         .toast.alert   { background-color: #dc2626; }
         .toast.purple  { background-color: #7c3aed; }
         @keyframes toastIn { from{transform:translateX(110%);opacity:0;}to{transform:translateX(0);opacity:1;} }
+        /* ── Map tab ──────────────────────────────────────── */
+        .map-wrap { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid #334155; }
+        #alertMap  { width: 100%; height: 340px; background: #0f172a; }
+        .map-overlay {
+            position: absolute; top: 10px; left: 10px; right: 10px;
+            display: flex; gap: 7px; align-items: flex-start; pointer-events: none; z-index: 1000;
+        }
+        .map-stat-pill {
+            background: rgba(15,23,42,0.92); border: 1px solid #334155;
+            border-radius: 20px; padding: 5px 11px; font-size: 10px;
+            color: #e2e8f0; font-weight: bold; pointer-events: none;
+            backdrop-filter: blur(8px); display: flex; align-items: center; gap: 5px;
+        }
+        .map-stat-pill.live { border-color: rgba(239,68,68,0.5); color: #fca5a5; }
+        .map-stat-pill .dot { width:7px; height:7px; border-radius:50%; background:#ef4444; animation: blink 1s infinite; }
+        .map-btn-row { display: flex; gap: 7px; margin-top: 8px; flex-wrap: wrap; }
+        .map-action-btn {
+            flex: 1; padding: 8px 10px; border-radius: 9px; cursor: pointer;
+            font-size: 11px; font-weight: bold; transition: all 0.2s; border: 1px solid;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .map-action-btn.centre { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.4); color:#93c5fd; }
+        .map-action-btn.centre:hover { background: rgba(59,130,246,0.3); }
+        .map-action-btn.gmaps  { background: rgba(249,115,22,0.15); border-color: rgba(249,115,22,0.4); color:#fdba74; }
+        .map-action-btn.gmaps:hover  { background: rgba(249,115,22,0.3); }
+        .map-action-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .route-stats {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 8px;
+        }
+        .route-stat-card {
+            background: rgba(15,23,42,0.8); border: 1px solid #1e293b;
+            border-radius: 10px; padding: 10px 12px;
+        }
+        .route-stat-lbl { font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        .route-stat-val { font-size: 16px; font-weight: 900; color: #e2e8f0; margin-top: 2px; }
+        .route-stat-unit{ font-size: 9px; color: #64748b; }
+        .map-empty { text-align: center; padding: 40px 20px; color: #475569; }
+
+        /* Custom Leaflet marker pulse */
+        .live-marker-pulse {
+            width: 16px; height: 16px; border-radius: 50%;
+            background: #ef4444; border: 3px solid #fff;
+            box-shadow: 0 0 0 0 rgba(239,68,68,0.7);
+            animation: markerPulse 1.5s ease-out infinite;
+        }
+        @keyframes markerPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+            70%  { box-shadow: 0 0 0 12px rgba(239,68,68,0); }
+            100% { box-shadow: 0 0 0 0  rgba(239,68,68,0); }
+        }
+        .start-marker {
+            width: 14px; height: 14px; border-radius: 50%;
+            background: #22c55e; border: 3px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
         /* Phone display panel */
         .phone-display-row { display:flex; align-items:center; justify-content:space-between; padding:7px 10px; background-color:#0f172a; border-radius:8px; border:1px solid #1e293b; }
         .phone-display-icon { font-size:15px; }
@@ -401,11 +458,62 @@
                 <div class="det-tabs">
                     <button class="det-tab on"         onclick="dc.switchTab('overview', event)">📋 Overview</button>
                     <button class="det-tab retell-tab" onclick="dc.switchTab('retell',   event)">🤖 Retell Agent</button>
+                    <button class="det-tab"            onclick="dc.switchTab('map',      event)" id="mapTab">🗺️ Map</button>
                     <button class="det-tab"            onclick="dc.switchTab('audio',    event)" id="audioTab">🎙️ Audio</button>
                     <button class="det-tab"            onclick="dc.switchTab('notes',    event)">📝 Log</button>
                 </div>
 
                 <div id="tab-overview" class="tab-pane on"></div>
+
+                <div id="tab-map" class="tab-pane">
+                    <div style="padding-top:4px;">
+                        <!-- Route stats row -->
+                        <div class="route-stats" id="routeStats">
+                            <div class="route-stat-card">
+                                <div class="route-stat-lbl">Distance</div>
+                                <div class="route-stat-val" id="routeDist">—</div>
+                                <div class="route-stat-unit">km travelled</div>
+                            </div>
+                            <div class="route-stat-card">
+                                <div class="route-stat-lbl">Speed</div>
+                                <div class="route-stat-val" id="routeSpeed">—</div>
+                                <div class="route-stat-unit">km/h current</div>
+                            </div>
+                            <div class="route-stat-card">
+                                <div class="route-stat-lbl">GPS Points</div>
+                                <div class="route-stat-val" id="routePoints">0</div>
+                                <div class="route-stat-unit">tracked</div>
+                            </div>
+                            <div class="route-stat-card">
+                                <div class="route-stat-lbl">Duration</div>
+                                <div class="route-stat-val" id="routeDuration">—</div>
+                                <div class="route-stat-unit">since panic</div>
+                            </div>
+                        </div>
+
+                        <!-- Map container -->
+                        <div class="map-wrap" style="margin-top:8px;">
+                            <div id="alertMap"></div>
+                            <div class="map-overlay" id="mapOverlay" style="display:none;">
+                                <div class="map-stat-pill live">
+                                    <div class="dot"></div>
+                                    LIVE TRACKING
+                                </div>
+                                <div class="map-stat-pill" id="mapAccPill">GPS ±—m</div>
+                            </div>
+                        </div>
+
+                        <!-- Map action buttons -->
+                        <div class="map-btn-row">
+                            <button class="map-action-btn centre" onclick="dc.centreMap()" id="mapCentreBtn" disabled>
+                                🎯 Centre on User
+                            </button>
+                            <button class="map-action-btn gmaps" onclick="dc.openGoogleMaps()" id="mapGmapsBtn" disabled>
+                                📍 Open in Google Maps
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
                 <div id="tab-retell" class="tab-pane">
                     <div class="retell-panel">
@@ -555,6 +663,7 @@
 <div class="toast" id="toast"></div>
 <audio id="alertSnd" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBT+P1fLIeDEGIXfH8N2RQgsc"></audio>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module">
 import { initializeApp }                     from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
@@ -583,7 +692,17 @@ const dc = window.dc = {
     callLogs:       {},
     knownIds:       new Set(),
     totalCallsMade: 0,
-    // ── Audio ─────────────────────────────────────────────
+    // ── Map ───────────────────────────────────────────────
+    _map:             null,   // Leaflet map instance
+    _mapAlertId:      null,   // which alert the map is showing
+    _liveMarker:      null,   // red pulsing current-position marker
+    _startMarker:     null,   // green start marker
+    _routeLine:       null,   // red polyline
+    _routeCoords:     {},     // alertId → [[lat,lng], ...]
+    _routeTimestamps: {},     // alertId → [isoString, ...]
+    _mapAutoFollow:   true,   // pan to user automatically
+    _mapInitialised:  false,
+    _statsTicker:     null,
     audioChunks:          {},
     audioListeners:       {},
     listenLive:           false,
@@ -678,13 +797,25 @@ const dc = window.dc = {
                 }
             });
 
-            // Refresh live location line
+            // Refresh live location text + feed map
             if (this.selectedId && raw[this.selectedId]) {
                 const a = raw[this.selectedId];
                 const el = document.getElementById('det-live-loc');
                 if (el) el.textContent = `${a.location?.lat?.toFixed(6) ?? '--'}, ${a.location?.lng?.toFixed(6) ?? '--'} (±${a.location?.accuracy ?? '--'}m)`;
                 document.getElementById('resolveBtn').style.display = a.status === 'active' ? 'flex' : 'none';
+
+                // Feed new GPS coordinate into map route
+                if (a.location?.lat) {
+                    this.updateMapLocation(this.selectedId, a.location, a.lastSeen);
+                }
             }
+
+            // Also update map for any alert that has GPS changes (even if not selected)
+            Object.values(raw).forEach(a => {
+                if (a.alertId && a.location?.lat) {
+                    this.updateMapLocation(a.alertId, a.location, a.lastSeen);
+                }
+            });
 
             this.allAlerts = raw;
             this.render();
@@ -854,15 +985,22 @@ const dc = window.dc = {
 
     // ── Select ────────────────────────────────────────────
     select(id) {
-        // If switching alerts, stop live listen and reset audio panel
+        // Switching to a different alert — reset map and audio panel
         if (this.selectedId !== id) {
             if (this.listenLive) {
-                this.listenLive = false;
+                this.listenLive    = false;
                 this.lastPlayedKey = null;
                 const liveEl = document.getElementById('liveAudioEl');
                 if (liveEl) { liveEl.pause(); liveEl.src = ''; }
             }
-            this._lastRenderedAlertId = null; // force panel to clear for new alert
+            this._lastRenderedAlertId = null;
+
+            // Reset map for new alert — will rebuild when Map tab is opened
+            if (this._map && this._mapAlertId !== id) {
+                this._resetMapLayers();
+                this._mapAlertId    = null;
+                this._mapAutoFollow = true;
+            }
         }
         this.selectedId = id;
         this.render();
@@ -879,8 +1017,262 @@ const dc = window.dc = {
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('on'));
         if (e?.target) e.target.classList.add('on');
         document.getElementById('tab-' + name).classList.add('on');
-        if (name === 'retell') this.renderRetell();
-        if (name === 'audio')  this.renderAudioPanel();
+        if (name === 'retell')  this.renderRetell();
+        if (name === 'audio')   this.renderAudioPanel();
+        if (name === 'map') {
+            this.initOrRefreshMap();
+            // Tick duration every second while map tab is open
+            if (this._statsTicker) clearInterval(this._statsTicker);
+            this._statsTicker = setInterval(() => this._updateRouteStats(), 1000);
+        } else {
+            if (this._statsTicker) { clearInterval(this._statsTicker); this._statsTicker = null; }
+        }
+    },
+
+    // ══════════════════════════════════════════════════════
+    //  MAP — Leaflet + OpenStreetMap
+    // ══════════════════════════════════════════════════════
+
+    initOrRefreshMap() {
+        const a = this.allAlerts[this.selectedId];
+        if (!a?.location?.lat) {
+            document.getElementById('alertMap').innerHTML = '<div class="map-empty">📍 No GPS coordinates yet</div>';
+            return;
+        }
+
+        // If map doesn't exist yet, create it
+        if (!this._map) {
+            this._map = L.map('alertMap', {
+                zoomControl:       true,
+                attributionControl: true,
+            }).setView([a.location.lat, a.location.lng], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19,
+            }).addTo(this._map);
+
+            // Disable auto-follow when user manually pans
+            this._map.on('dragstart', () => { this._mapAutoFollow = false; });
+        }
+
+        // If switching to a different alert, reset everything
+        if (this._mapAlertId !== this.selectedId) {
+            this._mapAlertId    = this.selectedId;
+            this._mapAutoFollow = true;
+            this._resetMapLayers();
+            this._buildRouteFromHistory();
+        }
+
+        // Force Leaflet to recalculate size (tab was hidden)
+        setTimeout(() => { if (this._map) this._map.invalidateSize(); }, 120);
+
+        this._updateMapOverlay();
+        this._updateRouteStats();
+    },
+
+    _resetMapLayers() {
+        if (this._liveMarker)  { this._map.removeLayer(this._liveMarker);  this._liveMarker  = null; }
+        if (this._startMarker) { this._map.removeLayer(this._startMarker); this._startMarker = null; }
+        if (this._routeLine)   { this._map.removeLayer(this._routeLine);   this._routeLine   = null; }
+    },
+
+    // Build route from any GPS history already in allAlerts
+    // (also called on initial open if alert has many prior pushes)
+    _buildRouteFromHistory() {
+        const a = this.allAlerts[this.selectedId];
+        if (!a?.location?.lat) return;
+
+        const id = this.selectedId;
+        if (!this._routeCoords[id]) this._routeCoords[id] = [];
+        if (!this._routeTimestamps[id]) this._routeTimestamps[id] = [];
+
+        // If we don't have history yet, seed from current location
+        if (this._routeCoords[id].length === 0) {
+            this._routeCoords[id].push([a.location.lat, a.location.lng]);
+            this._routeTimestamps[id].push(a.timestamp || new Date().toISOString());
+        }
+
+        this._redrawRoute();
+
+        // Centre map on current position
+        this._map.setView([a.location.lat, a.location.lng], 15);
+    },
+
+    // Called every time a new GPS push arrives from Firebase
+    updateMapLocation(alertId, location, ts) {
+        if (!location?.lat || !location?.lng) return;
+
+        if (!this._routeCoords[alertId]) this._routeCoords[alertId] = [];
+        if (!this._routeTimestamps[alertId]) this._routeTimestamps[alertId] = [];
+
+        const coords = this._routeCoords[alertId];
+        const last   = coords[coords.length - 1];
+
+        // Skip if position hasn't changed (avoid duplicate points)
+        if (last && last[0] === location.lat && last[1] === location.lng) return;
+
+        coords.push([location.lat, location.lng]);
+        this._routeTimestamps[alertId].push(ts || new Date().toISOString());
+
+        // Only update the map visuals if map is open and showing this alert
+        if (this._map && this._mapAlertId === alertId) {
+            this._redrawRoute();
+            if (this._mapAutoFollow) {
+                this._map.panTo([location.lat, location.lng], { animate: true, duration: 0.8 });
+            }
+            this._updateMapOverlay();
+            this._updateRouteStats();
+
+            // Flash the map tab to show new data
+            const mapTabBtn = document.getElementById('mapTab');
+            if (mapTabBtn) {
+                mapTabBtn.style.color = '#22c55e';
+                setTimeout(() => { mapTabBtn.style.color = ''; }, 2000);
+            }
+        }
+
+        // Update accuracy pill even if map tab isn't open
+        const accPill = document.getElementById('mapAccPill');
+        if (accPill) accPill.textContent = `GPS ±${location.accuracy ?? '--'}m`;
+    },
+
+    _redrawRoute() {
+        const id     = this._mapAlertId;
+        const coords = this._routeCoords[id] || [];
+        if (!coords.length || !this._map) return;
+
+        // Start marker — green dot at first position
+        const startPos = coords[0];
+        if (!this._startMarker) {
+            const startIcon = L.divIcon({
+                className: '',
+                html: '<div class="start-marker"></div>',
+                iconSize: [14, 14], iconAnchor: [7, 7]
+            });
+            this._startMarker = L.marker(startPos, { icon: startIcon, zIndexOffset: 100 })
+                .addTo(this._map)
+                .bindTooltip('🟢 Panic triggered here', { permanent: false, direction: 'top' });
+        }
+
+        // Live marker — pulsing red at latest position
+        const livePos  = coords[coords.length - 1];
+        const liveIcon = L.divIcon({
+            className: '',
+            html: '<div class="live-marker-pulse"></div>',
+            iconSize: [16, 16], iconAnchor: [8, 8]
+        });
+
+        const a = this.allAlerts[id];
+        const tooltipTxt = a
+            ? `🔴 ${a.userName} ${a.userSurname}<br>${a.vehicleColor} ${a.vehicleMake} • ${a.vehicleReg}<br>📍 ${livePos[0].toFixed(5)}, ${livePos[1].toFixed(5)}`
+            : '🔴 Current position';
+
+        if (!this._liveMarker) {
+            this._liveMarker = L.marker(livePos, { icon: liveIcon, zIndexOffset: 1000 })
+                .addTo(this._map)
+                .bindTooltip(tooltipTxt, { permanent: false, direction: 'top' });
+        } else {
+            this._liveMarker.setLatLng(livePos);
+            this._liveMarker.setIcon(liveIcon);
+            this._liveMarker.setTooltipContent(tooltipTxt);
+        }
+
+        // Route polyline — red dashed line
+        if (!this._routeLine) {
+            this._routeLine = L.polyline(coords, {
+                color:     '#ef4444',
+                weight:    4,
+                opacity:   0.85,
+                dashArray: coords.length > 1 ? null : '8 6',
+                lineJoin:  'round',
+                lineCap:   'round',
+            }).addTo(this._map);
+        } else {
+            this._routeLine.setLatLngs(coords);
+        }
+    },
+
+    _updateMapOverlay() {
+        const a       = this.allAlerts[this._mapAlertId];
+        const overlay = document.getElementById('mapOverlay');
+        if (overlay) overlay.style.display = a ? 'flex' : 'none';
+
+        const accPill = document.getElementById('mapAccPill');
+        if (accPill) accPill.textContent = `GPS ±${a?.location?.accuracy ?? '--'}m`;
+
+        const centreBtn = document.getElementById('mapCentreBtn');
+        const gmapsBtn  = document.getElementById('mapGmapsBtn');
+        if (centreBtn) centreBtn.disabled = !a?.location?.lat;
+        if (gmapsBtn)  gmapsBtn.disabled  = !a?.location?.lat;
+    },
+
+    _updateRouteStats() {
+        const id      = this._mapAlertId;
+        const coords  = this._routeCoords[id] || [];
+        const tss     = this._routeTimestamps[id] || [];
+        const a       = this.allAlerts[id];
+
+        // Points
+        const ptEl = document.getElementById('routePoints');
+        if (ptEl) ptEl.textContent = coords.length;
+
+        // Distance (Haversine sum along all segments)
+        let distKm = 0;
+        for (let i = 1; i < coords.length; i++) {
+            distKm += this._haversineKm(coords[i-1], coords[i]);
+        }
+        const distEl = document.getElementById('routeDist');
+        if (distEl) distEl.textContent = distKm < 1
+            ? (distKm * 1000).toFixed(0) + ' m'
+            : distKm.toFixed(2);
+        if (distEl && distKm >= 1) distEl.nextElementSibling.textContent = 'km travelled';
+        if (distEl && distKm < 1)  distEl.nextElementSibling.textContent = 'm travelled';
+
+        // Speed — between last two points
+        const speedEl = document.getElementById('routeSpeed');
+        if (speedEl) {
+            if (coords.length >= 2 && tss.length >= 2) {
+                const d  = this._haversineKm(coords[coords.length-2], coords[coords.length-1]);
+                const t  = (new Date(tss[tss.length-1]) - new Date(tss[tss.length-2])) / 3600000; // hours
+                const spd = t > 0 ? (d / t).toFixed(0) : '—';
+                speedEl.textContent = spd;
+            } else {
+                speedEl.textContent = '0';
+            }
+        }
+
+        // Duration
+        const durEl = document.getElementById('routeDuration');
+        if (durEl && a?.timestamp) {
+            const endTime  = a.resolvedAt ? new Date(a.resolvedAt) : new Date();
+            const elapsed  = Math.floor((endTime - new Date(a.timestamp)) / 1000);
+            const m        = Math.floor(elapsed / 60);
+            const s        = elapsed % 60;
+            durEl.textContent = `${m}m ${s}s`;
+        }
+    },
+
+    // Haversine distance in km between two [lat,lng] points
+    _haversineKm([lat1, lon1], [lat2, lon2]) {
+        const R  = 6371;
+        const dL = (lat2 - lat1) * Math.PI / 180;
+        const dO = (lon2 - lon1) * Math.PI / 180;
+        const a  = Math.sin(dL/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dO/2)**2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    },
+
+    centreMap() {
+        const a = this.allAlerts[this.selectedId];
+        if (!a?.location?.lat || !this._map) return;
+        this._mapAutoFollow = true;
+        this._map.setView([a.location.lat, a.location.lng], 16, { animate: true });
+    },
+
+    openGoogleMaps() {
+        const a = this.allAlerts[this.selectedId];
+        if (!a?.location?.lat) return;
+        window.open(`https://www.google.com/maps?q=${a.location.lat},${a.location.lng}`, '_blank');
     },
 
     // ── Audio listener ────────────────────────────────────
